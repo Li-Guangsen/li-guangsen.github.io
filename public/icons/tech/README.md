@@ -13,7 +13,10 @@ website's foreground color in both themes.
   Its current diagonal lightning cutout is preserved as a compound path; only
   the empty canvas is cropped to align with the other 20px icons. The CSS mask
   keeps the lightning transparent in both themes. Its MIT license appears below.
-- LangGraph: [Simple Icons source](https://github.com/simple-icons/simple-icons/blob/develop/icons/langgraph.svg).
+- Spring Boot (`springboot.svg`) and LangGraph (`langgraph-logo.svg`):
+  SVG files supplied by the site owner, copied without modification. Their
+  original viewBox and path geometry are preserved; CSS masks apply the same
+  theme color as the other technology badges.
 - MCP: [Simple Icons source](https://github.com/simple-icons/simple-icons/blob/develop/icons/modelcontextprotocol.svg).
   The Simple Icons license is preserved in `SIMPLE-ICONS-LICENSE`.
 - RAG uses a generic document-search drawing in `components/tech-icons.tsx`;

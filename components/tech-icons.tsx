@@ -4,7 +4,7 @@ const icons: Record<string, string> = {
   java: 'java',
   python: 'python',
   c: 'c',
-  springboot: 'spring',
+  springboot: 'springboot',
   spring: 'spring',
   fastapi: 'fastapi',
   mysql: 'mysql',
@@ -14,7 +14,7 @@ const icons: Record<string, string> = {
   'next.js': 'nextjs',
   nextjs: 'nextjs',
   git: 'git',
-  langgraph: 'langgraph',
+  langgraph: 'langgraph-logo',
   mcp: 'mcp',
 };
 
