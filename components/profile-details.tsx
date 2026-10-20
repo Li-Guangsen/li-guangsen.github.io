@@ -15,7 +15,7 @@ type ProfileDetailsProps = {
 
 function SchoolSeal({ school }: { school: string }) {
   if (school === '山东科技大学') {
-    return <span className={styles.schoolSeal} aria-hidden="true"><img src="/images/education/sdust-official-logo.png" width="288" height="65" alt="" loading="lazy" /></span>;
+    return <span className={styles.schoolSeal} aria-hidden="true"><img src="/images/education/sdust-logo.svg" width="48" height="48" alt="" loading="lazy" /></span>;
   }
   return <span className={styles.schoolFallback} aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m2 9 10-5 10 5-10 5L2 9ZM6 11v6c3.8 2.7 8.2 2.7 12 0v-6m4-2v7" /></svg></span>;
 }

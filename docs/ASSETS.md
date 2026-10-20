@@ -2,11 +2,12 @@
 
 ## 社交图标
 
-X 图标采用官方素材包中的 `logo.svg`，保留原始 `viewBox` 与路径；页面组件只将填充色设为 `currentColor` 以适应深浅主题。
+微信图标使用 Simple Icons 的 WeChat 单色双气泡 SVG，按微信官方品牌指引核对；保留原始路径，以 `currentColor` 适应深浅主题。
 
-- 官方主页：<https://about.x.com/>
-- 官方素材包：<https://about.x.com/content/dam/about-twitter/x/brand-toolkit/x-logo.zip>
-- 保留的原稿：`public/icons/social/x-official.svg`
+- 微信官方品牌指引：<https://wechat.design/brand/main-brand/>
+- SVG 来源：<https://github.com/simple-icons/simple-icons/blob/develop/icons/wechat.svg>
+- 保留的原稿：`public/icons/social/wechat.svg`
+- CC0 许可证：`public/icons/social/SIMPLE-ICONS-LICENSE`
 
 ## 品牌与字体
 
@@ -14,4 +15,4 @@ X 图标采用官方素材包中的 `logo.svg`，保留原始 `viewBox` 与路�
 
 ## 教育与技术图标
 
-学校校徽取自学校官网，来源见 `public/images/education/README.md`。技术图标使用本地 SVG，来源及许可证见 `public/icons/tech/README.md`。
+学校校徽使用站点所有者提供的完整 SVG，说明见 `public/images/education/README.md`。FastAPI 使用项目官方现行图标，其余技术图标也使用本地 SVG，来源及许可证见 `public/icons/tech/README.md`。

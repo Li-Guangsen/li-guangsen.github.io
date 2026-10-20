@@ -16,7 +16,7 @@ export const site = {
   ],
   // Set these to your own public links. Empty values are not displayed.
   github: 'https://github.com/Li-Guangsen',
-  x: 'https://x.com/rickk_Depth',
+  wechat: 'Quenching_raw',
   email: 'liguangsen60@qq.com',
   location: '',
   // Logo A is the default avatar. A personal photo can replace it later.

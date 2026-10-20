@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { site } from '@/data/site';
 import { Arrow } from './icons';
-import { GitHubIcon, MailIcon, XIcon } from './social-icons';
+import { GitHubIcon, MailIcon } from './social-icons';
+import { WeChatContact } from './wechat-contact';
 import { WorldLink } from './world-transition';
 import { BrandWordmark } from './brand-wordmark';
 import styles from './footer.module.css';
@@ -18,7 +19,7 @@ export function Footer() {
         </nav>
         <nav className={styles.socials} aria-label="社交与联系">
           {site.github && <a href={site.github} target="_blank" rel="noopener noreferrer" title="GitHub · Li-Guangsen" aria-label="GitHub · Li-Guangsen"><GitHubIcon /></a>}
-          {site.x && <a href={site.x} target="_blank" rel="noopener noreferrer" title="X · @rickk_Depth" aria-label="X · @rickk_Depth"><XIcon /></a>}
+          {site.wechat && <WeChatContact account={site.wechat} className={styles.socialButton} />}
           {site.email && <a href={`mailto:${site.email}`} title={site.email} aria-label={`邮箱 · ${site.email}`}><MailIcon /></a>}
         </nav>
       </div>

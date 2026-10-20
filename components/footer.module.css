@@ -1,12 +1,12 @@
 .resources { display: flex; flex-direction: column; align-items: flex-end; gap: 20px; padding-top: 8px; }
 .resources :global(.footer-links) { padding-top: 0; }
 .socials { display: flex; align-items: center; gap: 12px; margin-right: -8px; }
-.socials a { display: grid; place-items: center; width: 40px; height: 40px; color: var(--secondary); border: 1px solid transparent; border-radius: 9px; transition: color .18s, background .18s, border-color .18s; }
-.socials a:hover { color: var(--accent); background: var(--accent-soft); border-color: var(--line); }
-.socials a:focus-visible { color: var(--accent); background: var(--accent-soft); }
+.socials a, .socialButton { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; color: var(--secondary); background: transparent; border: 1px solid transparent; border-radius: 9px; cursor: pointer; transition: color .18s, background .18s, border-color .18s; }
+.socials a:hover, .socialButton:hover, .socialButton[aria-expanded='true'] { color: var(--accent); background: var(--accent-soft); border-color: var(--line); }
+.socials a:focus-visible, .socialButton:focus-visible { color: var(--accent); background: var(--accent-soft); }
 .socials svg { display: block; width: 23px; height: 23px; }
 @media (max-width: 720px) {
   .resources { align-items: flex-start; gap: 17px; padding-top: 5px; }
   .socials { margin-right: 0; margin-left: -8px; }
 }
-@media (prefers-reduced-motion: reduce) { .socials a { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .socials a, .socialButton { transition: none; } }

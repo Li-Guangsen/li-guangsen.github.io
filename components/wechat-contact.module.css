@@ -1,0 +1,13 @@
+.contact { position: relative; }
+.panel { position: absolute; z-index: 40; right: 0; bottom: calc(100% + 12px); width: 252px; max-width: calc(100vw - 32px); padding: 17px 18px 15px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); box-shadow: 0 10px 35px #17301a16; }
+.heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.heading h2 { font-size: 15px; font-weight: 600; line-height: 1.5; }
+.close { display: grid; place-items: center; width: 28px; height: 28px; margin: -5px -7px -5px 0; padding: 0; border: 0; border-radius: 6px; background: transparent; color: var(--muted); font-size: 23px; line-height: 1; }
+.close:hover { color: var(--ink); background: var(--accent-soft); }
+.label { color: var(--muted); font-size: 11px; line-height: 1.6; }
+.account { display: block; margin-top: 3px; font: 500 16px/1.7 var(--mono); letter-spacing: .1px; overflow-wrap: anywhere; user-select: all; }
+.copy { display: block; width: 100%; margin-top: 13px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--accent-soft); color: var(--accent); font-size: 13px; font-weight: 500; line-height: 1.5; }
+.copy:hover { border-color: var(--accent); }
+.status { margin-top: 10px; color: var(--muted); font-size: 11px; line-height: 1.7; }
+
+@media (max-width: 720px) { .panel { left: -52px; right: auto; } }

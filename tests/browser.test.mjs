@@ -169,6 +169,36 @@ test('gallery lightbox supports keyboard switching, Escape and focus restoration
   });
 });
 
+test('WeChat contact copies the public account and closes with Escape or outside click', { timeout: 60_000 }, async () => {
+  for (const width of [1440, 320]) {
+    await journey({ viewport: { width, height: 960 }, permissions: ['clipboard-read', 'clipboard-write'] }, async (page) => {
+      await page.goto('/');
+      const contacts = page.getByRole('navigation', { name: '社交与联系' });
+      assert.equal(await contacts.locator('a[href*="x.com"]').count(), 0);
+      const opener = contacts.getByRole('button', { name: '微信 · Quenching_raw', exact: true });
+      await opener.click();
+      const dialog = page.getByRole('dialog', { name: '微信联系', exact: true });
+      await dialog.waitFor({ state: 'visible' });
+      await assertFitsViewport(page);
+      const panel = await dialog.boundingBox();
+      assert.ok(panel && panel.x >= 0 && panel.x + panel.width <= width, 'WeChat panel must remain within the viewport');
+      await dialog.locator('code').click();
+      assert.equal(await dialog.isVisible(), true, 'Selecting the account for manual copying must keep the panel open');
+      await dialog.getByRole('button', { name: '复制微信号', exact: true }).click();
+      await dialog.getByRole('button', { name: '已复制 ✓', exact: true }).waitFor();
+      assert.equal(await page.evaluate(() => navigator.clipboard.readText()), 'Quenching_raw');
+      await page.keyboard.press('Escape');
+      await dialog.waitFor({ state: 'hidden' });
+      assert.equal(await opener.evaluate((element) => element === document.activeElement), true);
+      await opener.click();
+      await dialog.waitFor({ state: 'visible' });
+      await page.locator('.footer-bottom').click();
+      await dialog.waitFor({ state: 'hidden' });
+      assert.equal(await opener.getAttribute('aria-expanded'), 'false');
+    });
+  }
+});
+
 test('domain-independent branding and GitHub repository provenance are present without visitor API calls', { timeout: 60_000 }, async () => {
   await journey({ viewport: { width: 1440, height: 1000 } }, async (page) => {
     const githubRequests = [];

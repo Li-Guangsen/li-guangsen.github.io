@@ -15,9 +15,8 @@
 .educationEntry:last-child { padding-bottom: 0; }
 .educationEntry:not(:last-child)::after { content: ''; position: absolute; left: 24px; top: 55px; bottom: 7px; border-left: 1px solid var(--line); }
 .schoolSeal, .schoolFallback { width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; }
-.schoolSeal { display: block; overflow: hidden; background: #fff; box-shadow: 0 0 0 1px #dce3eb; }
-/* The original university lockup is preserved. This viewport shows its seal. */
-.schoolSeal img { display: block; width: auto; height: 48px; max-width: none; }
+.schoolSeal { display: block; background: #fff; box-shadow: 0 0 0 1px #dce3eb; }
+.schoolSeal img { display: block; width: 48px; height: 48px; object-fit: contain; }
 .schoolFallback { display: grid; place-items: center; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--line); }
 .educationCopy h3 { font-size: 16px; font-weight: 650; line-height: 1.5; }
 .educationCopy p { font-size: 14px; color: var(--secondary); margin-top: 2px; line-height: 1.65; }
