@@ -200,6 +200,8 @@ test('domain-independent branding and GitHub repository provenance are present w
       await page.goto(path);
       assert.doesNotMatch(await page.locator('body').innerText(), /sethli\.(tech|me)/i);
       assert.doesNotMatch(await page.title(), /sethli\.(tech|me)/i);
+      assert.ok((await page.locator('meta[property="og:image"]').getAttribute('content')).endsWith('/brand/social-card.png'));
+      assert.ok((await page.locator('meta[name="twitter:image"]').getAttribute('content')).endsWith('/brand/social-card.png'));
     }
     assert.deepEqual(githubRequests, [], 'Visitors must receive static GitHub snapshots');
   });
