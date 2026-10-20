@@ -206,7 +206,7 @@ test('domain-independent branding and GitHub repository provenance are present w
       if (new URL(request.url()).hostname === 'api.github.com') githubRequests.push(request.url());
     });
     await page.goto('/');
-    assert.match(await page.title(), /^sethli —/);
+    assert.equal(await page.title(), 'sethli');
     assert.equal(await page.locator('header.site-header .brand svg').count(), 1);
     assert.equal(await page.locator('.identity-letter img').getAttribute('src'), '/brand/avatar-512.png');
     const icons = await page.locator('link[rel="icon"]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')));
