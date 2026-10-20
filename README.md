@@ -1,4 +1,9 @@
-# SethLi 个人网站
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="public/brand/wordmark-dark.svg">
+  <img src="public/brand/wordmark.svg" width="180" alt="sethli 字标">
+</picture>
+
+# sethli 个人网站
 
 个人介绍、项目展示、技术笔记与生活收藏。使用 Next.js + Velite + MDX 构建，静态导出后由 GitHub Pages 托管。源码和文章保存在同一个仓库，继续沿用奶油色、橄榄绿与留白为主的原有风格。
 
@@ -29,7 +34,7 @@ GitHub Pages
 | 代码与公式 | Shiki / rehype-pretty-code 代码高亮和复制，KaTeX 数学公式 |
 | 图表 | Mermaid 在构建时生成 SVG；阅读时缩放、拖动、复位和复制源码 |
 | 扩展语法 | GFM 表格、任务列表、脚注、提示块、Emoji、标题锚点和 React 交互组件 |
-| 个人展示 | 可选教育、经历与技能，GitHub 贡献日历、项目卡片与图片，以及可拖动的兴趣收藏卡片 |
+| 个人展示 | 可选教育、经历与技能，GitHub 资料名片、原创/Fork 仓库分组、贡献日历、项目卡片与图片，以及可拖动的兴趣收藏卡片 |
 | 交互 | 深浅色切换、页面与卡片动画、头像彩纸效果，并尊重减少动态效果偏好 |
 | 发布 | GitHub Actions 自动构建，GitHub Pages 托管，定时刷新公开贡献数据 |
 
@@ -45,6 +50,7 @@ content/README.md        文章字段与正文语法说明
 data/site.ts             个人信息与项目列表
 data/world.ts            兴趣收藏卡片配置
 data/github-activity.json 已验证的 GitHub 公开贡献快照
+data/github-profile.json  已验证的 GitHub 资料与公开仓库快照
 lib/                     文章与界面数据处理
 public/                  头像、项目图、原创插画与图标
 scripts/                 内容开发、贡献数据刷新和静态预览
@@ -82,11 +88,11 @@ npm run dev
 | --- | --- |
 | `npm run content:build` | 单次严格编译文章；非法日期、文件名、字段和重复 URL 会阻止构建 |
 | `npm run content:watch` | 单独监听并编译文章 |
-| `npm run github:refresh` | 刷新公开 GitHub 贡献快照 |
+| `npm run github:refresh` | 刷新 GitHub 资料、公开仓库与贡献快照 |
 | `npm run typecheck` | 先编译内容，再生成 Next.js 路由类型并运行 TypeScript |
-| `npm test` | 运行关键逻辑测试 |
+| `npm test` | 检查搜索、分页与 GitHub 外部数据校验 |
 | `npm run test:browser` | 构建后检查搜索、文章交互、移动端和收藏预览；自动启动并清理静态预览 |
-| `npm run build` | 刷新贡献数据、严格编译内容、生成 `out/` |
+| `npm run build` | 刷新 GitHub 数据、严格编译内容、生成 `out/` |
 | `npm run preview` | 在 `http://127.0.0.1:4173` 预览构建结果 |
 
 这里的内容命令显式使用 `--strict`；Velite CLI 的默认值会覆盖配置中的严格选项，不能省掉这个参数。
@@ -103,7 +109,18 @@ npm run dev
 
 首页的 GitHub 日历展示真实公开贡献快照。每次构建以及每日定时工作流会抓取 `Li-Guangsen` 的公开贡献日历，校验账户、连续日期、每日次数和汇总值后写入 `data/github-activity.json`。网络异常时使用最近一次已验证快照，页面显示快照更新时间；不会编造贡献数据，也不需要访客提供 GitHub Token。
 
+首页 GitHub 名片与项目页仓库列表来自公开 GitHub API，在构建时写入 `data/github-profile.json`。原创仓库和 Fork 分组展示，Fork 显示上游来源，不把上游作品计为个人原创。简介、地区和技术语言只在公开资料有值时展示；访客浏览时不请求 GitHub API。刷新失败时使用已验证快照。
+
 当前仍保留预览模式与明确标记的示例文章。填好自己的资料、替换示例后，在 `data/site.ts` 将 `preview` 改为 `false`，移除预览提示并允许搜索引擎收录。此开关不会自动把示例文章变成真实个人记录，示例标签由各文章的 `sample` 字段决定。
+
+## 品牌与字体
+
+网站品牌为 **sethli**，与托管域名分开配置。页面标题、页眉、页脚、头像、项目插图和分享图均不携带域名后缀。以后换域名只需调整公开站点地址与托管设置。
+
+- A 标志用于 favicon 与默认头像：深色圆角方块、衬线 S、浅绿圆点。矢量原稿为 `public/icon.svg` 和 `public/brand/avatar.svg`，同时提供 16/32 px favicon 与 180 px Apple 图标。
+- B 字标用于页眉、页脚与本文档，保留衬线字形和绿色句点，省去域名后缀。文档提供浅色和深色背景版本。
+- `public/fonts/` 保存 Source Serif 4 与 JetBrains Mono 的 Latin 字符子集及许可证，由 `app/fonts.ts` 自托管；中文正文使用系统中文字体，不加载整套中文网页字体，也不依赖 Google Fonts 在线请求。
+- 全站正文与辅助文案按用途分级，中文正文以 16 px 为基准，文章阅读字号为 16–17 px；窄屏同步调整行距、留白与控件布局。
 
 ## 写一篇算法或学习笔记
 
@@ -151,7 +168,7 @@ git commit -m "Write a new learning note"
 git push
 ```
 
-推送 `main` 后，`.github/workflows/pages.yml` 自动检查、构建并上传 `out/` 到 GitHub Pages。Pull Request 只检查和构建；也可以在仓库 Actions 手动运行。Node.js 版本跟随 `.node-version`。定时工作流重建贡献日历，不需要人工新增提交。
+推送 `main` 后，`.github/workflows/pages.yml` 自动检查、构建并上传 `out/` 到 GitHub Pages。Pull Request 只检查和构建；也可以在仓库 Actions 手动运行。Node.js 版本跟随 `.node-version`。定时工作流刷新 GitHub 资料、仓库与贡献日历，不需要人工新增提交。
 
 在 [Actions](https://github.com/Li-Guangsen/li-guangsen.github.io/actions) 查看 `Deploy website to GitHub Pages`；发布成功后访问 <https://li-guangsen.github.io/>。Pages 上传的是静态产物，不会把原始仓库目录或 `node_modules/` 当作网站发布。
 
@@ -250,6 +267,8 @@ Nginx 默认站点的备份在 `/home/sethli/backups/personal-site/nginx-2026101
 
 本次参考站功能重构前的独立恢复点为 `/home/sethli/backups/personal-site/before-reference-rebuild-20261020-204454/`，包含 `repository.bundle`（全部已提交 Git 历史）和 `source.tar.gz`（重构前源码快照）。它们保存在项目目录之外，不会被内容构建或 Git 操作覆盖。
 
+品牌与 GitHub 展示调整前的恢复点为 `/home/sethli/backups/personal-site/before-brand-profile-20261020-212135/`，包含完整 Git 历史及提交 `c8ba72f` 的源码快照。
+
 ## Git 版本管理
 
 源码仓库位于 `/home/sethli/projects/personal-site/.git`，分支为 `main`。2026-10-20 的初始提交保存了恢复后的项目说明及当前网站源码。依赖、构建产物、环境变量文件和私钥不加入版本管理；`.gitattributes` 统一文本文件使用 LF 换行。
@@ -297,6 +316,6 @@ git bundle verify "$bundle_path"
 
 技术路线和功能组织参考 [neuromancer.club](https://neuromancer.club/)；页面、文案、交互样式和演示素材按本站原有风格重新实现，不复用对方头像、照片、个人经历或文章。
 
-深浅色偏好保存在访客本机浏览器。线上网站不需要数据库、账户登录或常驻后端，也不接入评论与第三方统计。贡献数据在构建阶段从 GitHub 读取，页面本身读取静态快照。
+深浅色偏好保存在访客本机浏览器。线上网站不需要数据库、账户登录或常驻后端，也不接入评论与第三方统计。GitHub 资料、仓库与贡献数据在构建阶段读取，页面本身读取静态快照。
 
-`public/social-card.svg` 是分享图素材；如目标社交平台要求位图，可另行制作对应 PNG。
+`public/social-card.svg` 是分享图矢量素材；页面分享元数据使用对应的 `public/brand/social-card.png`，兼容要求位图的社交平台。

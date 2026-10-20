@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
 import { once } from 'node:events';
 import net from 'node:net';
 import { after, before, test } from 'node:test';
@@ -9,6 +10,7 @@ import { chromium } from 'playwright';
 let browser;
 let preview;
 let origin;
+const githubSnapshot = JSON.parse(await readFile(new URL('../data/github-profile.json', import.meta.url), 'utf8'));
 
 before(async () => {
   // Each run owns its preview process and port; an existing dev server is never reused.
@@ -164,5 +166,41 @@ test('gallery lightbox supports keyboard switching, Escape and focus restoration
     await dialog.waitFor({ state: 'hidden' });
     await page.waitForFunction(() => document.body.style.overflow !== 'hidden');
     assert.equal(await opener.evaluate((element) => element === document.activeElement), true);
+  });
+});
+
+test('domain-independent branding and GitHub repository provenance are present without visitor API calls', { timeout: 60_000 }, async () => {
+  await journey({ viewport: { width: 1440, height: 1000 } }, async (page) => {
+    const githubRequests = [];
+    page.on('request', (request) => {
+      if (new URL(request.url()).hostname === 'api.github.com') githubRequests.push(request.url());
+    });
+    await page.goto('/');
+    assert.match(await page.title(), /^sethli —/);
+    assert.equal(await page.locator('header.site-header .brand svg').count(), 1);
+    assert.equal(await page.locator('.identity-letter img').getAttribute('src'), '/brand/avatar-512.png');
+    const icons = await page.locator('link[rel="icon"]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')));
+    assert.ok(icons.includes('/icon.svg'));
+    assert.ok(icons.includes('/brand/favicon-16.png'));
+    await page.getByRole('link', { name: '浏览仓库' }).click();
+    await page.waitForURL('**/projects/#github-repositories');
+    const repositories = page.locator('#github-collection');
+    await repositories.getByRole('heading', { name: '代码的另一面.' }).waitFor();
+    const groups = repositories.locator('h3');
+    assert.match(await groups.nth(0).innerText(), /本人创建/);
+    assert.match(await groups.nth(1).innerText(), /Fork/);
+    assert.equal(await repositories.locator('h4 a').count(), githubSnapshot.repositories.length);
+    for (const repository of githubSnapshot.repositories) {
+      assert.equal(await repositories.locator(`h4 a[href="${repository.url}"]`).count(), 1);
+      if (repository.parent) {
+        assert.equal(await repositories.getByRole('link', { name: repository.parent.fullName, exact: true }).getAttribute('href'), repository.parent.url);
+      }
+    }
+    for (const path of ['/', '/projects/', '/blog/', '/blog/binary-search-field-notes/', '/the-world/']) {
+      await page.goto(path);
+      assert.doesNotMatch(await page.locator('body').innerText(), /sethli\.(tech|me)/i);
+      assert.doesNotMatch(await page.title(), /sethli\.(tech|me)/i);
+    }
+    assert.deepEqual(githubRequests, [], 'Visitors must receive static GitHub snapshots');
   });
 });

@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "source": "https://api.github.com/users/Li-Guangsen",
+  "updatedAt": "2026-10-20T13:29:12.833Z",
+  "profile": {
+    "login": "Li-Guangsen",
+    "name": "李广森",
+    "url": "https://github.com/Li-Guangsen",
+    "bio": null,
+    "location": null,
+    "createdAt": "2021-09-23T14:11:44Z",
+    "publicRepos": 5,
+    "followers": 0,
+    "following": 0
+  },
+  "repositories": [
+    {
+      "name": "li-guangsen.github.io",
+      "fullName": "Li-Guangsen/li-guangsen.github.io",
+      "url": "https://github.com/Li-Guangsen/li-guangsen.github.io",
+      "description": null,
+      "fork": false,
+      "language": "TypeScript",
+      "stars": 0,
+      "forks": 0,
+      "pushedAt": "2026-10-20T13:15:19Z",
+      "archived": false,
+      "parent": null
+    },
+    {
+      "name": "beeai-framework",
+      "fullName": "Li-Guangsen/beeai-framework",
+      "url": "https://github.com/Li-Guangsen/beeai-framework",
+      "description": "Build production-ready AI agents in both Python and Typescript.",
+      "fork": true,
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "pushedAt": "2026-10-14T19:53:26Z",
+      "archived": false,
+      "parent": {
+        "name": "beeai-framework",
+        "fullName": "i-am-bee/beeai-framework",
+        "url": "https://github.com/i-am-bee/beeai-framework"
+      }
+    },
+    {
+      "name": "cockpit-tools",
+      "fullName": "Li-Guangsen/cockpit-tools",
+      "url": "https://github.com/Li-Guangsen/cockpit-tools",
+      "description": " 🚀 通用 AI IDE 账号管理工具：支持 Antigravity / Codex / GitHub Copilot / Windsurf / Kiro / Cursor / Gemini-cli / CodeBuddy，多账号切换、配额监控、自动唤醒与多开实例管理。 🚀 Universal AI IDE account manager for Antigravity / Codex / GitHub Copilot / Windsurf / Kiro / Cursor / Gemini-cli / CodeBuddy, with multi-account switching, quota monitoring, wake-up automation, and multi-insta",
+      "fork": true,
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "pushedAt": "2026-10-12T18:55:09Z",
+      "archived": false,
+      "parent": {
+        "name": "cockpit-tools",
+        "fullName": "jlcodes99/cockpit-tools",
+        "url": "https://github.com/jlcodes99/cockpit-tools"
+      }
+    },
+    {
+      "name": "crewAI",
+      "fullName": "Li-Guangsen/crewAI",
+      "url": "https://github.com/Li-Guangsen/crewAI",
+      "description": "Framework for orchestrating role-playing, autonomous AI agents. By fostering collaborative intelligence, CrewAI empowers agents to work together seamlessly, tackling complex tasks.",
+      "fork": true,
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "pushedAt": "2026-10-12T18:17:03Z",
+      "archived": false,
+      "parent": {
+        "name": "crewAI",
+        "fullName": "crewAIInc/crewAI",
+        "url": "https://github.com/crewAIInc/crewAI"
+      }
+    },
+    {
+      "name": "repobrain",
+      "fullName": "Li-Guangsen/repobrain",
+      "url": "https://github.com/Li-Guangsen/repobrain",
+      "description": "🧠 RepoBrain (formerly Antigravity) — Give your repo a brain. ChatGPT for your codebase: works in Claude Code, Cursor, Codex, Windsurf & more.",
+      "fork": true,
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "pushedAt": "2026-10-12T16:11:55Z",
+      "archived": false,
+      "parent": {
+        "name": "repobrain",
+        "fullName": "study8677/repobrain",
+        "url": "https://github.com/study8677/repobrain"
+      }
+    }
+  ]
+}

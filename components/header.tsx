@@ -7,6 +7,7 @@ import { site } from '@/data/site';
 import { SearchIcon } from './icons';
 import { useSiteSearch } from './site-search';
 import { WorldLink } from './world-transition';
+import { BrandWordmark } from './brand-wordmark';
 
 export function Header() {
   const pathname = usePathname();
@@ -37,7 +38,7 @@ export function Header() {
     try { localStorage.setItem('sethli-theme', next ? 'dark' : 'light'); } catch { /* Browsing without storage is supported. */ }
   }
   return <header className={`site-header${compact ? ' is-compact' : ''}${menuOpen ? ' menu-open' : ''}`}><div className="header-inner">
-    <Link className="brand" href="/" aria-label={`${site.name} 首页`}><span className="brand-mark">{site.initials}<span>.</span></span><span>{site.name}</span></Link>
+    <Link className="brand" href="/" aria-label={`${site.name} 首页`}><BrandWordmark /></Link>
     <div className="header-actions"><nav id="site-nav" aria-label="主导航" onClick={(event) => { if ((event.target as HTMLElement).closest('a')) setMenuOpen(false); }}>{[
       { href: '/', label: '首页', en: 'README' },
       { href: '/projects/', label: '项目', en: 'PROJECTS' },

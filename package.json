@@ -7,10 +7,10 @@
     "dev": "node scripts/dev.mjs",
     "content:build": "velite build --strict",
     "content:watch": "velite dev --strict",
-    "github:refresh": "node scripts/refresh-github-activity.mjs",
+    "github:refresh": "node scripts/refresh-github-activity.mjs && node scripts/refresh-github-profile.mjs",
     "build": "npm run github:refresh && npm run content:build && next build",
     "typecheck": "npm run content:build && next typegen && tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "test": "node --experimental-strip-types --test tests/*.test.ts tests/github-profile.test.mjs",
     "test:browser": "node --test tests/browser.test.mjs",
     "preview": "node scripts/preview.mjs"
   },

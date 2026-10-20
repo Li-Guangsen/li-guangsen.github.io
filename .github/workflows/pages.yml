@@ -7,7 +7,7 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    # Refresh the public GitHub contribution snapshot at 08:23 Asia/Shanghai.
+    # Refresh public GitHub profile, repositories and contributions at 08:23 Asia/Shanghai.
     - cron: '23 0 * * *'
 
 permissions:
@@ -48,7 +48,7 @@ jobs:
       - name: Install diagram renderer
         run: npx playwright install --with-deps chromium
 
-      - name: Check search and pagination behavior
+      - name: Check site logic and GitHub data
         run: npm test
 
       - name: Check types

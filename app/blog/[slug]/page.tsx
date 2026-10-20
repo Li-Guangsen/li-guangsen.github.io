@@ -23,9 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: 'article', title: post.title, description: post.description, url,
       siteName: site.name, locale: 'zh_CN', publishedTime: `${post.date}T00:00:00+08:00`,
       tags: post.tags, section: post.category,
-      images: [{ url: '/social-card.svg', width: 1200, height: 630, alt: `${site.name} · ${post.title}` }],
+      images: [{ url: '/brand/social-card.png', width: 1200, height: 630, alt: `${site.name} · ${post.title}` }],
     },
-    twitter: { card: 'summary_large_image', title: post.title, description: post.description, images: ['/social-card.svg'] },
+    twitter: { card: 'summary_large_image', title: post.title, description: post.description, images: ['/brand/social-card.png'] },
   };
 }
 

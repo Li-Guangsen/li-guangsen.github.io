@@ -1,6 +1,7 @@
 // Personal information lives here. Leave unknown fields empty until you want to publish them.
 export const site = {
-  name: 'sethli.tech',
+  // The brand is independent of whichever domain hosts the website.
+  name: 'sethli',
   // Public build-time URL; set NEXT_PUBLIC_SITE_URL when moving to a custom domain.
   url: (process.env.NEXT_PUBLIC_SITE_URL || 'https://li-guangsen.github.io').replace(/\/+$/, ''),
   title: '一个持续生长的个人空间',
@@ -15,8 +16,8 @@ export const site = {
   github: 'https://github.com/Li-Guangsen',
   email: '',
   location: '',
-  // Set this to a URL such as /images/avatar.webp to use your own avatar.
-  avatar: '',
+  // Logo A is the default avatar. A personal photo can replace it later.
+  avatar: '/brand/avatar-512.png',
   interests: ['个人项目', '技术写作', '持续学习'],
   // Example: { title: '学校或公司', description: '专业或职位', period: '2024 — 2026' }
   experience: [] as { title: string; description: string; period: string }[],
