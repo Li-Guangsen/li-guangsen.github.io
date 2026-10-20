@@ -1,15 +1,20 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import test from 'node:test';
+import sharp from 'sharp';
 import { refreshProfile, validateProfileSnapshot } from '../scripts/refresh-github-profile.mjs';
 
 const username = 'Fixture-Account';
 const snapshot = {
-  version: 1,
+  version: 2,
   source: `https://api.github.com/users/${username}`,
   updatedAt: '2026-01-01T12:00:00.000Z',
   profile: {
     login: username, name: 'Fixture User', url: `https://github.com/${username}`,
+    avatarUrl: 'https://avatars.githubusercontent.com/u/123456?v=4', avatarPath: '/images/github-avatar.png',
     bio: null, location: null, createdAt: '2021-09-23T14:11:44Z',
     publicRepos: 2, followers: 0, following: 0,
   },
@@ -91,18 +96,57 @@ test('accepts an account with no public repositories', () => {
   assert.doesNotThrow(() => validateProfileSnapshot(value, username));
 });
 
-test('keeps a validated local snapshot when GitHub is unavailable', async () => {
-  const cachedSnapshot = JSON.parse(await readFile(new URL('../data/github-profile.json', import.meta.url), 'utf8'));
-  const fetchBefore = globalThis.fetch;
+test('requires a local avatar and an HTTPS GitHub avatar source', () => {
+  for (const avatarUrl of [
+    null, 'http://avatars.githubusercontent.com/u/123456?v=4',
+    'https://example.com/u/123456?v=4', 'https://avatars.githubusercontent.com.example.com/u/123456',
+    'https://user:password@avatars.githubusercontent.com/u/123456', 'https://avatars.githubusercontent.com:8443/u/123456',
+    'https://avatars.githubusercontent.com/arbitrary/path', 'https://avatars.githubusercontent.com/u/123456#fragment',
+  ]) {
+    const value = fixture();
+    value.profile.avatarUrl = avatarUrl;
+    assert.throws(() => validateProfileSnapshot(value, username));
+  }
+  for (const avatarPath of [undefined, '/images/another.png', 'https://example.com/avatar.png', '../../avatar.png']) {
+    const value = fixture();
+    value.profile.avatarPath = avatarPath;
+    assert.throws(() => validateProfileSnapshot(value, username));
+  }
+});
+
+test('keeps a validated local snapshot and avatar when GitHub is unavailable', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'github-profile-cache-'));
+  const snapshotFile = pathToFileURL(join(directory, 'profile.json'));
+  const avatarFile = pathToFileURL(join(directory, 'avatar.png'));
+  const cachedSnapshot = fixture();
+  await writeFile(snapshotFile, JSON.stringify(cachedSnapshot));
+  await writeFile(avatarFile, await sharp({ create: { width: 128, height: 128, channels: 3, background: '#536f56' } }).png().toBuffer());
   const warnBefore = console.warn;
   let warned = false;
-  globalThis.fetch = async () => { throw new Error('Offline fixture'); };
   console.warn = () => { warned = true; };
   try {
-    assert.deepEqual(await refreshProfile(), cachedSnapshot);
+    assert.deepEqual(await refreshProfile({ profileUsername: username, snapshotFile, avatarFile, fetchImpl: async () => { throw new Error('Offline fixture'); } }), cachedSnapshot);
     assert.equal(warned, true);
+    assert.deepEqual(JSON.parse(await readFile(snapshotFile, 'utf8')), cachedSnapshot);
   } finally {
-    globalThis.fetch = fetchBefore;
     console.warn = warnBefore;
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('refuses incomplete avatar caches instead of publishing broken images', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'github-profile-incomplete-'));
+  const snapshotFile = pathToFileURL(join(directory, 'profile.json'));
+  const avatarFile = pathToFileURL(join(directory, 'avatar.png'));
+  await writeFile(snapshotFile, JSON.stringify(fixture()));
+  const refresh = () => refreshProfile({ profileUsername: username, snapshotFile, avatarFile, fetchImpl: async () => { throw new Error('Offline fixture'); } });
+  try {
+    await assert.rejects(refresh(), /Offline fixture/);
+    await writeFile(avatarFile, 'not an image');
+    await assert.rejects(refresh(), /Offline fixture/);
+    await writeFile(avatarFile, await sharp({ create: { width: 1, height: 1, channels: 3, background: '#536f56' } }).png().toBuffer());
+    await assert.rejects(refresh(), /Offline fixture/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
   }
 });

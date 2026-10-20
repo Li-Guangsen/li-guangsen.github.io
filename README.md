@@ -101,7 +101,7 @@ npm run dev
 
 ## 修改个人资料与展示
 
-- `data/site.ts`：网站名称、地址、头像、简介、兴趣、公开邮箱、GitHub、教育、经历、技能与项目列表。GitHub 使用已确认的 `Li-Guangsen`；未提供的履历保持空值，只填写真实资料。
+- `data/site.ts`：网站名称、地址、页脚域名 `footerDomain`、品牌头像、简介、兴趣、公开邮箱、GitHub、X、教育、经历、技能与项目列表。GitHub 使用已确认的 `Li-Guangsen`；未提供的履历保持空值，只填写真实资料。页脚社交图标链接分别打开 GitHub、X，以及 `mailto:liguangsen60@qq.com`。
 - `data/world.ts`：兴趣收藏的分组、标题、说明和图片。当前图片是原创示意插画，明确标注为插画；替换成自己的照片或截图后再设置相应类型与说明。
 - `public/images/`：自己维护的头像、项目图片与收藏素材；例如 `public/images/avatar.webp` 对应 `/images/avatar.webp`。
 - `app/globals.css` 与组件样式文件：配色、排版和交互样式。
@@ -109,13 +109,13 @@ npm run dev
 
 首页的 GitHub 日历展示真实公开贡献快照。每次构建以及每日定时工作流会抓取 `Li-Guangsen` 的公开贡献日历，校验账户、连续日期、每日次数和汇总值后写入 `data/github-activity.json`。网络异常时使用最近一次已验证快照，页面显示快照更新时间；不会编造贡献数据，也不需要访客提供 GitHub Token。
 
-首页 GitHub 名片与项目页仓库列表来自公开 GitHub API，在构建时写入 `data/github-profile.json`。原创仓库和 Fork 分组展示，Fork 显示上游来源，不把上游作品计为个人原创。简介、地区和技术语言只在公开资料有值时展示；访客浏览时不请求 GitHub API。刷新失败时使用已验证快照。
+首页 GitHub 名片与项目页仓库列表来自公开 GitHub API，在构建时写入 `data/github-profile.json`。GitHub 名片使用账号真实头像，构建时同步到 `public/images/github-avatar.png`，与首页 Logo A 品牌头像分别维护。原创仓库和 Fork 分组展示，Fork 显示上游来源，不把上游作品计为个人原创。简介、地区和技术语言只在公开资料有值时展示；访客浏览时不请求 GitHub API。刷新失败时使用已验证的资料与头像缓存。
 
 当前仍保留预览模式与明确标记的示例文章。填好自己的资料、替换示例后，在 `data/site.ts` 将 `preview` 改为 `false`，移除预览提示并允许搜索引擎收录。此开关不会自动把示例文章变成真实个人记录，示例标签由各文章的 `sample` 字段决定。
 
 ## 品牌与字体
 
-网站品牌为 **sethli**，与托管域名分开配置。页面标题、页眉、页脚、头像、项目插图和分享图均不携带域名后缀。以后换域名只需调整公开站点地址与托管设置。
+网站品牌为 **sethli**，与托管域名分开配置。页面标题、页眉与页脚字标、品牌头像、项目插图和分享图均不携带域名后缀；页脚版权行单独显示 `footerDomain`，当前为 `sethli.tech`。以后换域名时修改站点地址、托管设置和这一个版权字段即可，品牌与 Logo 保持独立。
 
 - A 标志用于 favicon 与默认头像：深色圆角方块、衬线 S、浅绿圆点。矢量原稿为 `public/icon.svg` 和 `public/brand/avatar.svg`，同时提供 16/32 px favicon 与 180 px Apple 图标。
 - B 字标用于页眉、页脚与本文档，保留衬线字形和绿色句点，省去域名后缀。文档提供浅色和深色背景版本。

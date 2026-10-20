@@ -2,6 +2,8 @@
 export const site = {
   // The brand is independent of whichever domain hosts the website.
   name: 'sethli',
+  // Displayed only in the footer copyright; it does not control hosting or branding.
+  footerDomain: 'sethli.tech',
   // Public build-time URL; set NEXT_PUBLIC_SITE_URL when moving to a custom domain.
   url: (process.env.NEXT_PUBLIC_SITE_URL || 'https://li-guangsen.github.io').replace(/\/+$/, ''),
   title: '一个持续生长的个人空间',
@@ -14,7 +16,8 @@ export const site = {
   ],
   // Set these to your own public links. Empty values are not displayed.
   github: 'https://github.com/Li-Guangsen',
-  email: '',
+  x: 'https://x.com/rickk_Depth',
+  email: 'liguangsen60@qq.com',
   location: '',
   // Logo A is the default avatar. A personal photo can replace it later.
   avatar: '/brand/avatar-512.png',

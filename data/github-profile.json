@@ -1,13 +1,15 @@
 {
-  "version": 1,
+  "version": 2,
   "source": "https://api.github.com/users/Li-Guangsen",
-  "updatedAt": "2026-10-20T13:29:12.833Z",
+  "updatedAt": "2026-10-20T13:50:49.077Z",
   "profile": {
     "login": "Li-Guangsen",
     "name": "李广森",
     "url": "https://github.com/Li-Guangsen",
     "bio": null,
     "location": null,
+    "avatarUrl": "https://avatars.githubusercontent.com/u/91270779?v=4",
+    "avatarPath": "/images/github-avatar.png",
     "createdAt": "2021-09-23T14:11:44Z",
     "publicRepos": 5,
     "followers": 0,
@@ -23,7 +25,7 @@
       "language": "TypeScript",
       "stars": 0,
       "forks": 0,
-      "pushedAt": "2026-10-20T13:15:19Z",
+      "pushedAt": "2026-10-20T13:36:40Z",
       "archived": false,
       "parent": null
     },

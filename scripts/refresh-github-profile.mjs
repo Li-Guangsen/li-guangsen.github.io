@@ -2,6 +2,8 @@ import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const output = new URL('../data/github-profile.json', import.meta.url);
+const avatarOutput = new URL('../public/images/github-avatar.png', import.meta.url);
+const avatarPath = '/images/github-avatar.png';
 const username = process.env.GITHUB_PROFILE_USERNAME || process.env.GITHUB_ACTIVITY_USERNAME || 'Li-Guangsen';
 if (!/^[a-z\d](?:[a-z\d-]{0,37}[a-z\d])?$/i.test(username)) throw new Error('Invalid GitHub profile username.');
 const api = 'https://api.github.com';
@@ -37,14 +39,26 @@ function repositoryIdentity(repository, expectedOwner) {
   if (repository.url !== `https://github.com/${repository.fullName}`) throw new Error('Invalid repository URL.');
 }
 
+function avatarSource(value) {
+  let url;
+  try { url = new URL(value); } catch { throw new Error('Invalid GitHub avatar URL.'); }
+  if (typeof value !== 'string' || url.protocol !== 'https:' || url.hostname !== 'avatars.githubusercontent.com'
+    || url.port || url.username || url.password || url.hash || !/^\/u\/[1-9]\d*$/.test(url.pathname)) {
+    throw new Error('Invalid GitHub avatar URL.');
+  }
+  return url;
+}
+
 export function validateProfileSnapshot(snapshot, expectedUsername = username) {
-  if (snapshot?.version !== 1 || snapshot.source !== `${api}/users/${expectedUsername}`) throw new Error('Invalid GitHub profile source.');
+  if (snapshot?.version !== 2 || snapshot.source !== `${api}/users/${expectedUsername}`) throw new Error('Invalid GitHub profile source.');
   date(snapshot.updatedAt, 'snapshot date');
   if (Date.parse(snapshot.updatedAt) > Date.now() + 86_400_000) throw new Error('Unexpected GitHub snapshot date.');
   const profile = snapshot.profile;
   if (typeof profile?.login !== 'string' || profile.login.toLowerCase() !== expectedUsername.toLowerCase() || profile.url !== `https://github.com/${profile.login}`) {
     throw new Error('GitHub profile belongs to a different account.');
   }
+  avatarSource(profile.avatarUrl);
+  if (profile.avatarPath !== avatarPath) throw new Error('Invalid local GitHub avatar path.');
   for (const field of ['name', 'bio', 'location']) text(profile[field], `profile ${field}`, true);
   date(profile.createdAt, 'GitHub join date');
   for (const field of ['publicRepos', 'followers', 'following']) count(profile[field], `profile ${field}`);
@@ -67,8 +81,8 @@ export function validateProfileSnapshot(snapshot, expectedUsername = username) {
   return snapshot;
 }
 
-async function request(path) {
-  const response = await fetch(`${api}${path}`, {
+async function request(path, fetchImpl) {
+  const response = await fetchImpl(`${api}${path}`, {
     headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'Personal-Site-Profile-Snapshot', 'X-GitHub-Api-Version': '2022-11-28' },
     signal: AbortSignal.timeout(15_000),
   });
@@ -76,24 +90,56 @@ async function request(path) {
   return response.json();
 }
 
+async function downloadAvatar(source, fetchImpl) {
+  const url = avatarSource(source);
+  url.searchParams.set('s', '128');
+  const response = await fetchImpl(url, {
+    headers: { Accept: 'image/png,image/jpeg,image/webp', 'User-Agent': 'Personal-Site-Profile-Snapshot' },
+    redirect: 'error', signal: AbortSignal.timeout(15_000),
+  });
+  if (!response.ok) throw new Error(`GitHub avatar returned HTTP ${response.status}.`);
+  if (!/^image\/(?:png|jpeg|webp)(?:;|$)/i.test(response.headers.get('content-type') || '')) {
+    throw new Error('GitHub avatar returned an unsupported image type.');
+  }
+  const chunks = [];
+  let size = 0;
+  for await (const chunk of response.body || []) {
+    size += chunk.byteLength;
+    if (size > 2_000_000) throw new Error('GitHub avatar exceeded its size limit.');
+    chunks.push(chunk);
+  }
+  const { default: sharp } = await import('sharp');
+  return sharp(Buffer.concat(chunks), { limitInputPixels: 16_000_000 })
+    .rotate().resize(128, 128, { fit: 'cover' }).png().toBuffer();
+}
+
+async function validateCachedAvatar(file) {
+  const { default: sharp } = await import('sharp');
+  const image = sharp(await readFile(file), { limitInputPixels: 16_000_000 });
+  const metadata = await image.metadata();
+  if (metadata.format !== 'png' || metadata.width !== 128 || metadata.height !== 128) throw new Error('Invalid cached GitHub avatar.');
+  await image.raw().toBuffer();
+}
+
 function identity(repository) {
   return { name: repository.name, fullName: repository.full_name, url: repository.html_url };
 }
 
-export async function refreshProfile() {
+export async function refreshProfile({ profileUsername = username, snapshotFile = output, avatarFile = avatarOutput, fetchImpl = fetch } = {}) {
   let temporary;
+  let avatarTemporary;
   try {
-    const profile = await request(`/users/${username}`);
+    const profile = await request(`/users/${profileUsername}`, fetchImpl);
     const repositories = [];
     for (let page = 1; ; page += 1) {
       if (page > 100) throw new Error('GitHub repository pagination exceeded its limit.');
-      const batch = await request(`/users/${username}/repos?type=owner&sort=pushed&direction=desc&per_page=100&page=${page}`);
+      const batch = await request(`/users/${profileUsername}/repos?type=owner&sort=pushed&direction=desc&per_page=100&page=${page}`, fetchImpl);
       if (!Array.isArray(batch)) throw new Error('GitHub returned an invalid repository list.');
       repositories.push(...batch);
       if (batch.length < 100) break;
     }
     const normalized = await Promise.all(repositories.map(async (repository) => {
-      const detail = repository.fork ? await request(`/repos/${repository.full_name}`) : repository;
+      const detail = repository.fork ? await request(`/repos/${repository.full_name}`, fetchImpl) : repository;
       return {
         ...identity(repository), description: repository.description, fork: repository.fork,
         language: repository.language, stars: repository.stargazers_count, forks: repository.forks_count,
@@ -102,22 +148,31 @@ export async function refreshProfile() {
       };
     }));
     const snapshot = validateProfileSnapshot({
-      version: 1, source: `${api}/users/${username}`, updatedAt: new Date().toISOString(),
+      version: 2, source: `${api}/users/${profileUsername}`, updatedAt: new Date().toISOString(),
       profile: {
         login: profile.login, name: profile.name, url: profile.html_url, bio: profile.bio, location: profile.location,
+        avatarUrl: profile.avatar_url, avatarPath,
         createdAt: profile.created_at, publicRepos: profile.public_repos, followers: profile.followers, following: profile.following,
       },
       repositories: normalized.sort((a, b) => b.pushedAt.localeCompare(a.pushedAt) || a.name.localeCompare(b.name)),
-    });
-    await mkdir(new URL('../data/', import.meta.url), { recursive: true });
-    temporary = new URL(`${output.href}.${process.pid}.tmp`);
+    }, profileUsername);
+    const avatar = await downloadAvatar(snapshot.profile.avatarUrl, fetchImpl);
+    await mkdir(new URL('.', snapshotFile), { recursive: true });
+    await mkdir(new URL('.', avatarFile), { recursive: true });
+    temporary = new URL(`${snapshotFile.href}.${process.pid}.tmp`);
+    avatarTemporary = new URL(`${avatarFile.href}.${process.pid}.tmp`);
+    await writeFile(avatarTemporary, avatar);
     await writeFile(temporary, `${JSON.stringify(snapshot, null, 2)}\n`);
-    await rename(temporary, output);
+    await rename(avatarTemporary, avatarFile);
+    await rename(temporary, snapshotFile);
     console.log(`GitHub profile: ${snapshot.profile.login}, ${normalized.length} public repositories (${normalized.filter((repository) => repository.fork).length} forks).`);
     return snapshot;
   } catch (error) {
     if (temporary) await rm(temporary, { force: true }).catch(() => {});
-    const cached = await readFile(output, 'utf8').then(JSON.parse).then((value) => validateProfileSnapshot(value)).catch(() => null);
+    if (avatarTemporary) await rm(avatarTemporary, { force: true }).catch(() => {});
+    const cached = await readFile(snapshotFile, 'utf8').then(JSON.parse)
+      .then((value) => validateProfileSnapshot(value, profileUsername))
+      .then(async (value) => { await validateCachedAvatar(avatarFile); return value; }).catch(() => null);
     if (!cached) throw error;
     console.warn(`GitHub profile: keeping the verified snapshot from ${cached.updatedAt}. ${error.message}`);
     return cached;

@@ -198,7 +198,8 @@ test('domain-independent branding and GitHub repository provenance are present w
     }
     for (const path of ['/', '/projects/', '/blog/', '/blog/binary-search-field-notes/', '/the-world/']) {
       await page.goto(path);
-      assert.doesNotMatch(await page.locator('body').innerText(), /sethli\.(tech|me)/i);
+      assert.doesNotMatch(await page.locator('#main').innerText(), /sethli\.(tech|me)/i);
+      assert.match(await page.locator('.footer-bottom').innerText(), /© \d{4} [^\s]+\.[^\s]+/);
       assert.doesNotMatch(await page.title(), /sethli\.(tech|me)/i);
       assert.ok((await page.locator('meta[property="og:image"]').getAttribute('content')).endsWith('/brand/social-card.png'));
       assert.ok((await page.locator('meta[name="twitter:image"]').getAttribute('content')).endsWith('/brand/social-card.png'));

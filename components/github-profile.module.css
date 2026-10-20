@@ -8,13 +8,13 @@
 .intro { margin-top: 13px; color: var(--secondary); font-size: 15px; line-height: 1.8; }
 .identity { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 24px; }
 .account { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.account > svg { color: var(--accent); }
+.avatar { display: block; width: 52px; height: 52px; flex: 0 0 52px; border: 1px solid var(--line); border-radius: 50%; object-fit: cover; background: var(--bg); }
 .account > span:not(.external) { display: grid; gap: 1px; min-width: 0; }
 .account strong { font-size: 16px; font-weight: 600; line-height: 1.5; }
 .account span > span { color: var(--secondary); font: 12px/1.7 var(--mono); overflow-wrap: anywhere; }
 .account:hover strong { color: var(--accent); }
-.external { color: var(--accent); font-size: 18px; }
-.since { color: var(--muted); font-size: 12px; }
+.external { flex-shrink: 0; color: var(--accent); font-size: 18px; }
+.since { color: var(--muted); font-size: 12px; white-space: nowrap; }
 .bio { margin-top: 16px; font-size: 15px; line-height: 1.8; }
 .meta { margin-top: 8px; color: var(--secondary); font-size: 13px; }
 .profileAside { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
