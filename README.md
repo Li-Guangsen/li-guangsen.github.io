@@ -2,15 +2,17 @@
 
 个人介绍、项目展示和 Markdown 技术博客。使用 Next.js 静态导出，源码和文章统一保存在同一个 GitHub 仓库。
 
-源码仓库：<https://github.com/Li-Guangsen/li-guangsen.github.io>。准备使用的 Pages 地址：<https://li-guangsen.github.io/>。
+源码仓库：<https://github.com/Li-Guangsen/li-guangsen.github.io>。Pages 网站：<https://li-guangsen.github.io/>。
 
-2026-10-20 正在从现有 Nginx 服务器迁移到 GitHub Pages。源码和发布工作流已通过 SSH 推送到远程仓库，首次 GitHub Actions 构建与部署均已成功；GitHub Pages 的发布来源和旧域名设置仍待确认，默认网址验证正在进行。当前域名继续由原服务器提供服务。
+2026-10-20 已完成 GitHub Pages 发布。源码和发布工作流已通过 SSH 推送到远程仓库，GitHub Actions 构建与部署成功，发布来源已切换到 GitHub Actions，旧的 Pages 自定义域名绑定已移除。默认地址的 7 个页面、静态资源、文章直链、客户端导航数据、站点地图和自定义 404 均已验证。
+
+`sethli.tech` 的 DNS 尚未切换，仍由原 Nginx 服务器提供服务。GitHub Pages 已可独立通过上述默认地址访问，以后可以绑定最终选定的域名。
 
 ## GitHub Pages 发布
 
 `.github/workflows/pages.yml` 在推送 `main` 或手动运行时执行依赖安装、类型检查、静态构建和 Pages 发布。Pull Request 只执行检查与构建。Node.js 版本跟随 `.node-version`，构建产物为 `out/`。
 
-首次发布：
+首次发布设置（已完成，重新配置时参考）：
 
 1. 在仓库的 `Settings → Pages → Build and deployment → Source` 选择 `GitHub Actions`。
 2. 为先验证 GitHub 默认地址，移除 `Settings → Pages → Custom domain` 中现有的 `sethli.tech` 绑定。源码中的旧 `CNAME` 已移除；使用 Actions 发布时，域名仍需在 Pages 设置中管理。
@@ -41,7 +43,7 @@ GitHub Actions 读取仓库的 `Settings → Secrets and variables → Actions �
 NEXT_PUBLIC_SITE_URL=https://li-guangsen.github.io npm run build
 ```
 
-完成 Pages 发布后再将自定义域名的 DNS 从服务器切换到 GitHub Pages；切换前保留下面的服务器维护和回退说明。
+如需把自定义域名迁到 Pages，先配置 Pages 的 Custom domain 和 `SITE_URL`，再将 DNS 从服务器切换到 GitHub Pages。下面的服务器维护说明继续用于原站点和回退。
 
 工作流与域名设置说明：<https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages>、<https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site>。
 
@@ -169,7 +171,7 @@ rsync -a --delete --chmod=D755,F644 out/ /var/www/sethli.tech/current/
 rsync -a --delete --chmod=D755,F644 /home/sethli/backups/personal-site/site-实际时间/ /var/www/sethli.tech/current/
 ```
 
-## 域名与 HTTPS
+## 原服务器的域名与 HTTPS
 
 2026-10-11 已完成域名解析和 HTTPS 配置。网站地址为 <https://sethli.tech/>，HTTP 会以 301 跳转到 HTTPS，并保留原路径和查询参数。网站目录为 `/var/www/sethli.tech/current`，服务器公网 IPv4 为 `43.167.185.41`。
 
@@ -187,7 +189,7 @@ rsync -a --delete --chmod=D755,F644 /home/sethli/backups/personal-site/site-实�
 
 Cloudflare 代理已启用，2026-10-11 通过两个 Cloudflare 地址验证 HTTPS 返回 200、HTTP 跳转到 HTTPS。2026-10-11 用户已确认在控制台将 SSL/TLS 模式设置为 `Full (strict)`（界面显示“完整（严格）”）并保存；设置后再次验证 Cloudflare 代理下的主要页面、JavaScript 资源、自定义 404 和保留路径及参数的 HTTP 跳转，全部通过。服务器已安装符合严格模式要求的 Let's Encrypt 证书。官方说明见 <https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full-strict/> 和 <https://developers.cloudflare.com/dns/proxy-status/>。
 
-## 证书维护
+## 原服务器的证书维护
 
 Certbot 5.8.0 通过官方 snap 安装，使用 Nginx 插件签发和部署 `sethli.tech` 的证书。首次证书到期日期为 `2027-01-09`，自动续期会更新这个日期。正式证书位于 `/etc/letsencrypt/live/sethli.tech/`。
 
@@ -233,7 +235,7 @@ git commit -m "Update site content"
 git push
 ```
 
-每次提交都会形成一个恢复点。Git 不会自动保存尚未提交的修改。完成首次 Pages 设置后，推送 `main` 会自动构建并发布网站；如果仍需更新原服务器目录，按前文的服务器回退步骤操作。
+每次提交都会形成一个恢复点。Git 不会自动保存尚未提交的修改。推送 `main` 会自动构建并发布 Pages 网站；如果仍需更新原服务器目录，按前文的服务器回退步骤操作。
 
 查看最近的版本及某个版本的文件：
 
@@ -248,7 +250,7 @@ git show HEAD:README.md
 git restore --source=HEAD -- README.md
 ```
 
-初次提交后会在 `/home/sethli/backups/personal-site/` 保存 `git-initial-*.bundle`，其中包含 Git 提交历史和源码，可以单独克隆恢复。该备份包保存在同一台服务器，尚未建立异地副本。需要保存后续所有已提交版本时，可生成新包：
+初次提交后在 `/home/sethli/backups/personal-site/` 保存了 `git-initial-*.bundle`，Pages 迁移前后也保存了独立的 Git 备份包，均包含 Git 提交历史和源码，可以单独克隆恢复。这些备份包保存在服务器本机；已推送的源码和历史另有 GitHub 远程副本。需要保存后续所有已提交版本时，可生成新包：
 
 ```bash
 cd /home/sethli/projects/personal-site
