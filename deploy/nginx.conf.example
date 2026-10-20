@@ -1,0 +1,29 @@
+# HTTP server block for sethli.tech; HTTPS will be configured after DNS is ready.
+# Serve the CONTENTS of out/ from /var/www/sethli.tech/current.
+# Use your existing HTTPS/certificate management for this domain.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name sethli.tech;
+    root /var/www/sethli.tech/current;
+    index index.html;
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ =404;
+        add_header Cache-Control "no-cache";
+    }
+
+    location /_next/static/ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+
+    location ~ \.html$ {
+        add_header Cache-Control "no-cache";
+    }
+
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
+    }
+}

@@ -1,0 +1,23 @@
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.env*
+!.env.example
+.preview/
+.openai/
+next-env.d.ts
+
+# Local credentials and private keys
+.aws/
+.ssh/
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs and OS metadata
+*.log
+.DS_Store
+Thumbs.db
+Desktop.ini
