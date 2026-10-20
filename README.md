@@ -1,6 +1,47 @@
-# sethli.tech 个人网站
+# SethLi 个人网站
 
-个人介绍、项目展示和 Markdown 技术博客。使用 Next.js 静态导出，在 Ubuntu 服务器构建，由 Nginx 提供静态文件访问。
+个人介绍、项目展示和 Markdown 技术博客。使用 Next.js 静态导出，源码和文章统一保存在同一个 GitHub 仓库。
+
+源码仓库：<https://github.com/Li-Guangsen/li-guangsen.github.io>。准备使用的 Pages 地址：<https://li-guangsen.github.io/>。
+
+2026-10-20 正在从现有 Nginx 服务器迁移到 GitHub Pages。发布工作流已加入源码；首次远程推送和部署仍需完成 GitHub 授权及 Pages 设置。当前域名继续由原服务器提供服务。
+
+## GitHub Pages 发布
+
+`.github/workflows/pages.yml` 在推送 `main` 或手动运行时执行依赖安装、类型检查、静态构建和 Pages 发布。Pull Request 只执行检查与构建。Node.js 版本跟随 `.node-version`，构建产物为 `out/`。
+
+首次发布：
+
+1. 在仓库的 `Settings → Pages → Build and deployment → Source` 选择 `GitHub Actions`。
+2. 为先验证 GitHub 默认地址，移除 `Settings → Pages → Custom domain` 中现有的 `sethli.tech` 绑定。源码中的旧 `CNAME` 已移除；使用 Actions 发布时，域名仍需在 Pages 设置中管理。
+3. 在已获得 GitHub 写入权限的终端推送代码：
+
+   ```bash
+   cd /home/sethli/projects/personal-site
+   git push -u origin main
+   ```
+
+4. 在 `Actions` 查看 `Deploy website to GitHub Pages`，确认发布成功后访问 <https://li-guangsen.github.io/>，检查首页、博客、文章直链、项目及 404。
+
+仓库名匹配 `Li-Guangsen` 的用户主页地址，所以静态资源位于根路径，不需要配置项目子路径。Pages 发布只上传 `out/`，网站源码、文章原稿和依赖不作为 Pages 文件发布。
+
+公开仓库内已经提交的源码和文章文件仍可在 GitHub 查看；`draft: true` 只控制文章是否进入生成的网站。
+
+### 网站地址与以后换域名
+
+`data/site.ts` 的 `site.url` 从公开构建变量 `NEXT_PUBLIC_SITE_URL` 读取，默认值为 `https://li-guangsen.github.io`。该网址用于站点地图和分享元数据，不影响仓库名。
+
+GitHub Actions 读取仓库的 `Settings → Secrets and variables → Actions → Variables` 中的普通变量 `SITE_URL`。以后换域名时，更新该变量和 Pages 的 Custom domain，再重新运行工作流。该变量是公开网址，使用 Variables 即可。
+
+在本机构建时，可以参考 `.env.example` 创建 `.env.local`，或通过环境变量指定网址：
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://li-guangsen.github.io npm run build
+```
+
+完成 Pages 发布后再将自定义域名的 DNS 从服务器切换到 GitHub Pages；切换前保留下面的服务器维护和回退说明。
+
+工作流与域名设置说明：<https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages>、<https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site>。
 
 ## 服务器目录
 
@@ -105,12 +146,13 @@ npm run preview
 
 默认地址为 `http://127.0.0.1:4173`。两个预览服务都只监听服务器本机，电脑访问需要 SSH 端口转发。按 `Ctrl+C` 停止。生产网站由 Nginx 提供访问，不需要保持预览或 Node.js 进程运行。
 
-## 更新网站目录
+## 服务器回退更新（需要时）
 
 构建完成后，先备份当前网站，再同步 `out/` 的内容：
 
 ```bash
 cd /home/sethli/projects/personal-site
+NEXT_PUBLIC_SITE_URL=https://sethli.tech npm run build
 backup_dir="/home/sethli/backups/personal-site/site-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$backup_dir"
 rsync -a /var/www/sethli.tech/current/ "$backup_dir/"
@@ -174,7 +216,7 @@ Nginx 默认站点的备份在 `/home/sethli/backups/personal-site/nginx-2026101
 
 源码仓库位于 `/home/sethli/projects/personal-site/.git`，分支为 `main`。2026-10-20 的初始提交保存了恢复后的项目说明及当前网站源码。依赖、构建产物、环境变量文件和私钥不加入版本管理；`.gitattributes` 统一文本文件使用 LF 换行。
 
-当前尚未配置远程仓库。提交身份在缺少既有 Git 配置时暂用本仓库专属的 `sethli <sethli@localhost>`，不会修改全局身份；以后可以在仓库内用 `git config user.name` 和 `git config user.email` 设置自己的提交身份。
+远程 `origin` 已配置为 `https://github.com/Li-Guangsen/li-guangsen.github.io.git`，现有 GitHub 提交历史已取回并保留；首次推送需要 GitHub 写入权限。提交身份在缺少既有 Git 配置时暂用本仓库专属的 `sethli <sethli@localhost>`，不会修改全局身份；以后可以在仓库内用 `git config user.name` 和 `git config user.email` 设置自己的提交身份。
 
 修改前后检查状态和差异，确认修改内容后提交：
 
@@ -184,9 +226,10 @@ git status
 git diff
 git add -A
 git commit -m "Update site content"
+git push
 ```
 
-每次提交都会形成一个恢复点。Git 不会自动保存尚未提交的修改，也不会自动发布网站；提交后仍按前文步骤构建和同步网站目录。
+每次提交都会形成一个恢复点。Git 不会自动保存尚未提交的修改。完成首次 Pages 设置后，推送 `main` 会自动构建并发布网站；如果仍需更新原服务器目录，按前文的服务器回退步骤操作。
 
 查看最近的版本及某个版本的文件：
 

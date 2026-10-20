@@ -1,7 +1,8 @@
 // Personal information lives here. Leave unknown fields empty until you want to publish them.
 export const site = {
   name: 'sethli.tech',
-  url: 'https://sethli.tech',
+  // Public build-time URL; set NEXT_PUBLIC_SITE_URL when moving to a custom domain.
+  url: (process.env.NEXT_PUBLIC_SITE_URL || 'https://li-guangsen.github.io').replace(/\/+$/, ''),
   title: '一个持续生长的个人空间',
   description: '个人介绍、项目作品与技术笔记。记录学习，也记录从想法到实现的过程。',
   initials: 'S',
