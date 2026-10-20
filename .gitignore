@@ -1,6 +1,8 @@
 node_modules/
 .next/
 out/
+.velite/
+public/static/
 *.tsbuildinfo
 .env*
 !.env.example

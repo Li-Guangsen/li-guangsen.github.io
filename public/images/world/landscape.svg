@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560" viewBox="0 0 800 560">
+  <path fill="#e8e3d2" d="M0 0h800v560H0z"/><circle cx="577" cy="165" r="58" fill="#d6be87"/>
+  <path d="M0 322q129-124 272-35t277-16 251 31v258H0z" fill="#b6c0a0"/>
+  <path d="M0 373q151-72 296-25t282-17 222 50v179H0z" fill="#819772"/>
+  <path d="M0 473q168-150 352-52t448 13v126H0z" fill="#587451"/>
+  <path d="M339 560q142-87 81-166-19-30 42-60-23 43 18 78 84 82-19 148z" fill="#c6af82"/>
+  <g fill="none" stroke="#8e977f" stroke-linecap="round" stroke-width="2"><path d="M153 152q9-9 18 0 9-9 18 0M197 127q7-7 14 0 7-7 14 0"/></g>
+  <path d="M83 72h114M83 72v30M717 72H603M717 72v30M83 488v-30M83 488h29M717 488v-30M717 488h-29" fill="none" stroke="#f6f3e8" opacity=".7"/>
+  <text x="92" y="105" fill="#8e967d" font-family="monospace" font-size="10" letter-spacing="3">ROOM FOR WHAT COMES NEXT</text>
+</svg>

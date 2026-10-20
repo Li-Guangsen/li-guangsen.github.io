@@ -12,7 +12,7 @@ export const site = {
     '从一个小问题出发，在实践中寻找答案。把过程写下来，让零散的想法慢慢连成线。',
   ],
   // Set these to your own public links. Empty values are not displayed.
-  github: '',
+  github: 'https://github.com/Li-Guangsen',
   email: '',
   location: '',
   // Set this to a URL such as /images/avatar.webp to use your own avatar.
@@ -20,6 +20,9 @@ export const site = {
   interests: ['个人项目', '技术写作', '持续学习'],
   // Example: { title: '学校或公司', description: '专业或职位', period: '2024 — 2026' }
   experience: [] as { title: string; description: string; period: string }[],
+  education: [] as { title: string; description: string; period: string }[],
+  // Fill these only with technologies you want to list as your own skills.
+  skills: [] as string[],
 };
 
 export type Project = {
@@ -32,6 +35,8 @@ export type Project = {
   year: string;
   url?: string;
   github?: string;
+  image?: string;
+  notes?: { title: string; paragraphs?: string[]; items?: string[] }[];
 };
 
 export const projects: Project[] = [
@@ -40,8 +45,22 @@ export const projects: Project[] = [
     title: '一个属于自己的数字空间',
     eyebrow: 'PERSONAL WEBSITE',
     description: '把个人介绍、项目与文章放在同一个地方。简洁、轻量，也留出继续生长的空间。',
-    tags: ['Next.js', 'TypeScript', 'Markdown'],
+    tags: ['Next.js', 'TypeScript', 'Velite', 'MDX'],
     status: '持续构建',
     year: '2026',
+    github: 'https://github.com/Li-Guangsen/li-guangsen.github.io',
+    notes: [
+      { title: '给过程一个落脚的地方', paragraphs: ['把项目、笔记和日常观察放进同一个空间。保留清晰的层次、安静的配色，也让每一次小小的更新有迹可循。'] },
+      { title: '这一版能做什么', items: ['个人首页：简介、公开 GitHub 活动、可配置的经历与技能。', '项目与学习：作品手记、技术标签、源码入口和学习笔记。', '技术写作：Markdown / MDX、分类标签、搜索、置顶与分页。', '阅读体验：代码高亮与复制、数学公式、交互图表、目录和阅读进度。', '拾光收藏：可拖动、可放大浏览的图像册。'] },
+      { title: '怎样继续生长', paragraphs: ['文章和资料随源码一起保存，每次提交都留下一个可恢复的版本。推送到 GitHub 后，Actions 自动完成内容编译、静态构建和 GitHub Pages 发布。', '这里仍保留明确标注的写作与插画示例，之后可以逐步换成真实的笔记、照片和项目记录。'] },
+    ],
   },
 ];
+
+// Learning showcases link to actual notes; this entry is explicitly an example.
+export const learning = [{
+  title: '把一道题，拆成可以理解的步骤',
+  description: '用二分查找演示如何记录思路、代码、复杂度和复盘，也试着让抽象的过程动起来。',
+  tags: ['算法', '交互演示', '写作示例'],
+  href: '/blog/binary-search-field-notes/',
+}];

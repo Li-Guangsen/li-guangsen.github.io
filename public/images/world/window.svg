@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560" viewBox="0 0 800 560">
+  <path fill="#ebe6d7" d="M0 0h800v560H0z"/><path d="M134 94h396v351H134z" fill="#d0d8bf"/><path d="M151 109h362v321H151z" fill="#e3e9d4"/>
+  <circle cx="432" cy="183" r="42" fill="#f3ebc3"/><path d="M151 345q68-79 150-31t212-32v148H151z" fill="#c6d3b1"/><path d="M151 391q105-73 201-28t161-10v77H151z" fill="#a8bb91"/>
+  <path d="M325 108h14v323h-14zM151 269h362v13H151z" fill="#f6f3e8"/>
+  <path d="M133 89h398v14H133zM126 431h414v19H126z" fill="#c5bc9f"/><path d="M157 450h364l169 110H230z" fill="#f6eed3" opacity=".8"/>
+  <path d="M554 408h107l-16 100h-75z" fill="#bc9c78"/><path d="M564 422h88" stroke="#957c5e" stroke-width="3"/>
+  <path d="M607 412q-11-87 5-171m-6 105q-24-22-47-28m51-15q24-29 47-33" fill="none" stroke="#6c835a" stroke-width="5"/>
+  <g fill="#819a6b"><ellipse cx="608" cy="248" rx="18" ry="42" transform="rotate(10 608 248)"/><ellipse cx="566" cy="312" rx="18" ry="40" transform="rotate(-54 566 312)"/><ellipse cx="649" cy="277" rx="18" ry="39" transform="rotate(48 649 277)"/><ellipse cx="584" cy="366" rx="15" ry="32" transform="rotate(-43 584 366)"/></g>
+  <text x="75" y="514" fill="#92967f" font-family="monospace" font-size="11" letter-spacing="3">A LITTLE ROOM TO BREATHE</text>
+</svg>

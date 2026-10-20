@@ -1,0 +1,168 @@
+import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
+import { once } from 'node:events';
+import net from 'node:net';
+import { after, before, test } from 'node:test';
+import { setTimeout as delay } from 'node:timers/promises';
+import { chromium } from 'playwright';
+
+let browser;
+let preview;
+let origin;
+
+before(async () => {
+  // Each run owns its preview process and port; an existing dev server is never reused.
+  const reservation = net.createServer();
+  reservation.listen(0, '127.0.0.1');
+  await once(reservation, 'listening');
+  const { port } = reservation.address();
+  await new Promise((resolve, reject) => reservation.close((error) => error ? reject(error) : resolve()));
+  origin = `http://127.0.0.1:${port}`;
+  preview = spawn(process.execPath, ['scripts/preview.mjs'], {
+    cwd: new URL('..', import.meta.url),
+    env: { ...process.env, PORT: String(port) },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  let output = '';
+  preview.stdout.on('data', (chunk) => { output += chunk; });
+  preview.stderr.on('data', (chunk) => { output += chunk; });
+  let spawnError;
+  preview.on('error', (error) => { spawnError = error; });
+  const deadline = Date.now() + 15_000;
+  while (true) {
+    if (spawnError) throw spawnError;
+    if (preview.exitCode !== null) throw new Error(`Static preview exited: ${output}`);
+    try {
+      const response = await fetch(origin, { signal: AbortSignal.timeout(1000) });
+      if (response.ok) break;
+    } catch { /* The owned server may still be starting. */ }
+    if (Date.now() >= deadline) throw new Error(`Static preview did not become ready: ${output}`);
+    await delay(100);
+  }
+  browser = await chromium.launch({
+    executablePath: process.env.MERMAID_CHROMIUM_EXECUTABLE_PATH || undefined,
+  });
+}, { timeout: 60_000 });
+
+after(async () => {
+  await browser?.close();
+  if (preview && preview.exitCode === null && preview.signalCode === null) {
+    const exited = once(preview, 'exit');
+    preview.kill('SIGTERM');
+    await Promise.race([exited, delay(2000)]);
+    if (preview.exitCode === null && preview.signalCode === null) {
+      preview.kill('SIGKILL');
+      await exited;
+    }
+  }
+});
+
+async function journey(options, run) {
+  const context = await browser.newContext({ baseURL: origin, reducedMotion: 'reduce', ...options });
+  const page = await context.newPage();
+  page.setDefaultTimeout(10_000);
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  try {
+    await run(page, context);
+    assert.deepEqual(errors, [], 'The journey must not produce uncaught browser errors');
+  } finally {
+    await context.close();
+  }
+}
+
+async function assertFitsViewport(page) {
+  const sizes = await page.evaluate(() => ({
+    viewport: document.documentElement.clientWidth,
+    content: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
+  }));
+  assert.ok(sizes.content <= sizes.viewport + 1, `Horizontal overflow: ${JSON.stringify(sizes)}`);
+}
+
+test('keyboard search opens an article and Escape releases the filled search dialog', { timeout: 60_000 }, async () => {
+  await journey({ viewport: { width: 1440, height: 960 } }, async (page) => {
+    await page.goto('/');
+    await page.keyboard.press('Control+k');
+    const search = page.getByRole('dialog', { name: '搜索文章' });
+    await search.waitFor({ state: 'visible' });
+    await search.getByRole('combobox', { name: '搜索关键词' }).fill('二分 Python');
+    await search.getByRole('option').first().waitFor();
+    await page.keyboard.press('Enter');
+    await page.waitForURL('**/blog/binary-search-field-notes/');
+    await page.getByRole('heading', { level: 1 }).waitFor();
+    assert.equal(await search.isVisible(), false);
+
+    const previousOverflow = await page.evaluate(() => document.body.style.overflow);
+    await page.keyboard.press('Control+k');
+    await search.waitFor({ state: 'visible' });
+    await search.getByRole('combobox', { name: '搜索关键词' }).fill('二分 Python');
+    assert.equal(await page.evaluate(() => document.body.style.overflow), 'hidden');
+    await page.keyboard.press('Escape');
+    await search.waitFor({ state: 'hidden' });
+    await page.waitForFunction((previous) => document.body.style.overflow === previous, previousOverflow);
+  });
+});
+
+test('article code, Mermaid controls and algorithm steps work in the static export', { timeout: 60_000 }, async () => {
+  await journey({ viewport: { width: 1440, height: 1000 }, permissions: ['clipboard-read', 'clipboard-write'] }, async (page) => {
+    await page.goto('/blog/binary-search-field-notes/');
+    await page.getByRole('button', { name: '复制代码', exact: true }).click();
+    await page.getByRole('button', { name: '已复制 ✓', exact: true }).waitFor();
+    assert.match(await page.evaluate(() => navigator.clipboard.readText()), /def binary_search\(values/);
+
+    await page.getByRole('button', { name: '放大图表', exact: true }).click();
+    await page.getByText('125%', { exact: true }).waitFor();
+    await page.getByRole('button', { name: '复位图表', exact: true }).click();
+    await page.getByText('100%', { exact: true }).waitFor();
+    await page.getByRole('button', { name: '复制源码', exact: true }).click();
+    assert.match(await page.evaluate(() => navigator.clipboard.readText()), /flowchart TD/);
+
+    const demo = page.getByRole('region', { name: '二分查找交互演示' });
+    await demo.getByLabel('寻找').selectOption('20');
+    const next = demo.getByRole('button', { name: '下一步 →', exact: true });
+    for (let step = 0; step < 10 && await next.isEnabled(); step++) await next.click();
+    assert.equal(await next.isEnabled(), false);
+    assert.match(await demo.innerText(), /数组中没有 20/);
+    await demo.getByRole('button', { name: '重新开始', exact: true }).click();
+    assert.equal(await next.isEnabled(), true);
+  });
+});
+
+test('mobile navigation and collapsible article contents fit 390 px and 320 px screens', { timeout: 60_000 }, async () => {
+  for (const width of [390, 320]) {
+    await journey({ viewport: { width, height: 844 }, isMobile: true, hasTouch: true }, async (page) => {
+      await page.goto('/');
+      await assertFitsViewport(page);
+      await page.getByRole('button', { name: '打开菜单', exact: true }).click();
+      await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '博客 BLOG' }).click();
+      await page.waitForURL('**/blog/');
+      await page.getByRole('button', { name: '打开菜单', exact: true }).waitFor();
+      await assertFitsViewport(page);
+
+      await page.goto('/blog/binary-search-field-notes/');
+      const contents = page.locator('details').filter({ has: page.locator('summary', { hasText: '本篇目录' }) });
+      await contents.locator('summary').click();
+      await contents.getByRole('link', { name: '留下可运行的实现', exact: true }).click();
+      await page.waitForFunction(() => !document.querySelector('details')?.open);
+      assert.ok(new URL(page.url()).hash, 'A contents link must navigate to an article heading');
+      await assertFitsViewport(page);
+    });
+  }
+});
+
+test('gallery lightbox supports keyboard switching, Escape and focus restoration', { timeout: 60_000 }, async () => {
+  await journey({ viewport: { width: 1440, height: 960 } }, async (page) => {
+    await page.goto('/the-world/');
+    const opener = page.getByRole('button', { name: /^放大查看：/ }).first();
+    await opener.click();
+    const dialog = page.getByRole('dialog');
+    await dialog.waitFor({ state: 'visible' });
+    const firstTitle = await dialog.getByRole('heading', { level: 2 }).innerText();
+    await page.keyboard.press('ArrowRight');
+    assert.notEqual(await dialog.getByRole('heading', { level: 2 }).innerText(), firstTitle);
+    await page.keyboard.press('Escape');
+    await dialog.waitFor({ state: 'hidden' });
+    await page.waitForFunction(() => document.body.style.overflow !== 'hidden');
+    assert.equal(await opener.evaluate((element) => element === document.activeElement), true);
+  });
+});

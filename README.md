@@ -1,154 +1,186 @@
 # SethLi 个人网站
 
-个人介绍、项目展示和 Markdown 技术博客。使用 Next.js 静态导出，源码和文章统一保存在同一个 GitHub 仓库。
+个人介绍、项目展示、技术笔记与生活收藏。使用 Next.js + Velite + MDX 构建，静态导出后由 GitHub Pages 托管。源码和文章保存在同一个仓库，继续沿用奶油色、橄榄绿与留白为主的原有风格。
 
-源码仓库：<https://github.com/Li-Guangsen/li-guangsen.github.io>。Pages 网站：<https://li-guangsen.github.io/>。
+- 源码：<https://github.com/Li-Guangsen/li-guangsen.github.io>
+- 当前主页：<https://li-guangsen.github.io/>
+- 写作说明：[content/README.md](content/README.md)
 
-2026-10-20 已完成 GitHub Pages 发布。源码和发布工作流已通过 SSH 推送到远程仓库，GitHub Actions 构建与部署成功，发布来源已切换到 GitHub Actions，旧的 Pages 自定义域名绑定已移除。默认地址的 7 个页面、静态资源、文章直链、客户端导航数据、站点地图和自定义 404 均已验证。
+当前维护和发布以 GitHub Pages 为准，访问默认主页不需要腾讯云服务器。原有 `sethli.tech` 与 Nginx 配置保留，本次功能重构不修改腾讯云站点、DNS 或证书；文末的服务器说明仅供历史查阅和按需回退。
 
-`sethli.tech` 的 DNS 尚未切换，仍由原 Nginx 服务器提供服务。GitHub Pages 已可独立通过上述默认地址访问，以后可以绑定最终选定的域名。
-
-## GitHub Pages 发布
-
-`.github/workflows/pages.yml` 在推送 `main` 或手动运行时执行依赖安装、类型检查、静态构建和 Pages 发布。Pull Request 只执行检查与构建。Node.js 版本跟随 `.node-version`，构建产物为 `out/`。
-
-首次发布设置（已完成，重新配置时参考）：
-
-1. 在仓库的 `Settings → Pages → Build and deployment → Source` 选择 `GitHub Actions`。
-2. 为先验证 GitHub 默认地址，移除 `Settings → Pages → Custom domain` 中现有的 `sethli.tech` 绑定。源码中的旧 `CNAME` 已移除；使用 Actions 发布时，域名仍需在 Pages 设置中管理。
-3. 在已获得 GitHub 写入权限的终端推送代码：
-
-   ```bash
-   cd /home/sethli/projects/personal-site
-   git push -u origin main
-   ```
-
-4. 在 `Actions` 查看 `Deploy website to GitHub Pages`，确认发布成功后访问 <https://li-guangsen.github.io/>，检查首页、博客、文章直链、项目及 404。
-
-仓库名匹配 `Li-Guangsen` 的用户主页地址，所以静态资源位于根路径，不需要配置项目子路径。Pages 发布只上传 `out/`，网站源码、文章原稿和依赖不作为 Pages 文件发布。
-
-公开仓库内已经提交的源码和文章文件仍可在 GitHub 查看；`draft: true` 只控制文章是否进入生成的网站。
-
-首次已成功的发布记录：<https://github.com/Li-Guangsen/li-guangsen.github.io/actions/runs/39418219609>，源码提交为 `6769b0d`。
-
-### 网站地址与以后换域名
-
-`data/site.ts` 的 `site.url` 从公开构建变量 `NEXT_PUBLIC_SITE_URL` 读取，默认值为 `https://li-guangsen.github.io`。该网址用于站点地图和分享元数据，不影响仓库名。
-
-GitHub Actions 读取仓库的 `Settings → Secrets and variables → Actions → Variables` 中的普通变量 `SITE_URL`。以后换域名时，更新该变量和 Pages 的 Custom domain，再重新运行工作流。该变量是公开网址，使用 Variables 即可。
-
-在本机构建时，可以参考 `.env.example` 创建 `.env.local`，或通过环境变量指定网址：
-
-```bash
-NEXT_PUBLIC_SITE_URL=https://li-guangsen.github.io npm run build
-```
-
-如需把自定义域名迁到 Pages，先配置 Pages 的 Custom domain 和 `SITE_URL`，再将 DNS 从服务器切换到 GitHub Pages。下面的服务器维护说明继续用于原站点和回退。
-
-工作流与域名设置说明：<https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages>、<https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site>。
-
-## 服务器目录
-
-| 目录 | 用途 |
-| --- | --- |
-| `/home/sethli/projects/personal-site` | 源码；以后在这里修改资料、文章和样式 |
-| 项目中的 `out/` | 每次 `npm run build` 生成的静态网站 |
-| `/var/www/sethli.tech/current` | Nginx 使用的网站目录 |
-| `/home/sethli/backups/personal-site` | 迁移备份和网站更新前的备份 |
-
-源码目录结构：
+## 架构与功能
 
 ```text
-app/             页面、路由、全局样式及网站元数据
-components/      导航、项目卡片、博客搜索等组件
-content/posts/   Markdown 文章
-data/            个人资料与项目列表
-lib/             文章读取与渲染
-public/          头像、图片和图标
-scripts/         本机静态预览
-deploy/          Nginx 配置示例
+content/posts/*.md 或 *.mdx
+        ↓ Velite：校验元数据、编译正文、过滤草稿
+.velite/posts.json + post-summaries.json
+        ↓ Next.js App Router：预生成页面
+out/ 静态网页与资源
+        ↓ GitHub Actions
+GitHub Pages
 ```
 
-`node_modules/`、`.next/`、`out/`、`next-env.d.ts` 和 `*.tsbuildinfo` 是依赖或生成文件，不需要从 Windows 继续复制，也不应加入 Git。换平台时根据 `package-lock.json` 重新安装依赖。
+| 部分 | 实现 |
+| --- | --- |
+| 页面 | Next.js App Router、React、TypeScript，`output: 'export'` |
+| 内容 | Velite 严格校验，兼容旧 `.md` 与新 `.mdx`，文章文件名保留为 URL |
+| 博客列表 | 多分类、置顶、分页、带 URL 状态的筛选；全站快捷搜索匹配标题、摘要、标签和分类 |
+| 阅读 | 同类文章导航、滚动目录、阅读进度、上一篇与下一篇、文章独立元数据 |
+| 代码与公式 | Shiki / rehype-pretty-code 代码高亮和复制，KaTeX 数学公式 |
+| 图表 | Mermaid 在构建时生成 SVG；阅读时缩放、拖动、复位和复制源码 |
+| 扩展语法 | GFM 表格、任务列表、脚注、提示块、Emoji、标题锚点和 React 交互组件 |
+| 个人展示 | 可选教育、经历与技能，GitHub 贡献日历、项目卡片与图片，以及可拖动的兴趣收藏卡片 |
+| 交互 | 深浅色切换、页面与卡片动画、头像彩纸效果，并尊重减少动态效果偏好 |
+| 发布 | GitHub Actions 自动构建，GitHub Pages 托管，定时刷新公开贡献数据 |
 
-类型检查的增量缓存统一写入 `.next/cache/tsconfig.tsbuildinfo`，不会在源码根目录生成缓存文件。`.next/cache/` 可以删除，下次检查或构建会自动生成。`next.config.ts`、`tsconfig.json`、`.node-version`、`next-env.d.ts` 和 `AGENTS.md` 均为跨平台项目配置或工具文件，需要保留。
+按需求不接入评论系统。列表、搜索和关联文章只使用不含编译正文的摘要数据，正文随当前文章页面加载，避免把所有文章放进公共浏览器脚本。未发布文章不会进入公开文章数据、搜索或站点地图；公开仓库中的原稿仍可在 GitHub 查看。
 
-## 构建环境
+## 项目目录
 
-项目要求 Node.js 22 或更高版本。本服务器已在 sethli 用户目录安装 Node.js 24.21.0，版本记录在 `.node-version`，官方版本说明见 <https://nodejs.org/en/about/previous-releases>。
-
-Node.js 位于 `/home/sethli/.local/lib/node-v24.21.0-linux-x64`，命令入口位于 `/home/sethli/.local/bin`。Ubuntu 默认的 `~/.profile` 已支持这个目录；重新登录后可直接使用 `node` 和 `npm`。如果旧终端找不到命令，可以执行：
-
-```bash
-export PATH="/home/sethli/.local/bin:$PATH"
+```text
+app/                     页面、路由、全局样式、元数据与站点地图
+components/              页面组件、文章渲染、搜索及交互展示
+content/posts/           Markdown / MDX 文章
+content/README.md        文章字段与正文语法说明
+data/site.ts             个人信息与项目列表
+data/world.ts            兴趣收藏卡片配置
+data/github-activity.json 已验证的 GitHub 公开贡献快照
+lib/                     文章与界面数据处理
+public/                  头像、项目图、原创插画与图标
+scripts/                 内容开发、贡献数据刷新和静态预览
+tests/                   关键逻辑与浏览器回归检查
+velite.config.ts         内容结构与编译插件配置
+.github/workflows/       自动检查、构建和 Pages 发布
+deploy/                  原服务器 Nginx 配置示例
 ```
 
-首次安装依赖、修改依赖或从另一台机器迁移后执行：
+`node_modules/`、`.next/`、`.velite/`、`public/static/`、`out/`、`next-env.d.ts` 和 `*.tsbuildinfo` 是依赖或生成文件，不加入 Git，也不需要从 Windows 继续复制。`public/static/` 专用于 Velite 复制的文章资源，会在内容构建时清理；自己维护的图片应放在 `public/images/` 等目录，或文章旁由 Velite 处理。
+
+类型检查缓存写入 `.next/cache/tsconfig.tsbuildinfo`。`next.config.ts`、`tsconfig.json`、`.node-version` 和 `AGENTS.md` 是需要保留的跨平台配置或工具说明。
+
+## 安装与本地开发
+
+使用 `.node-version` 指定的 Node.js；项目要求 Node.js 22 或更高版本。本服务器已安装 Node.js 24.21.0，命令入口为 `/home/sethli/.local/bin`。旧终端找不到命令时执行 `export PATH="/home/sethli/.local/bin:$PATH"`，不需要重复安装 Node.js。
+
+首次克隆、换平台或修改依赖后：
 
 ```bash
 cd /home/sethli/projects/personal-site
 npm ci
+npx playwright install --with-deps chromium
 ```
 
-日常修改文章和页面不需要反复安装依赖。
-
-## 修改个人内容
-
-- `data/site.ts`：网站名称、域名、头像、简介、兴趣、公开邮箱、GitHub、经历和项目列表。
-- `content/posts/*.md`：博客文章；文件名会成为文章 URL。
-- `public/`：头像和项目图片等静态资源，例如 `public/images/avatar.webp` 对应 `/images/avatar.webp`。
-- `app/globals.css`：配色和排版。
-- `app/projects/[slug]/page.tsx`：当前项目详情正文；新增项目时也应补充相应正文。
-
-尚未提供的经历、邮箱和 GitHub 不会显示。当前简介为初版文案，三篇文章都标为“示例”。正式发布自己的内容时，可替换或删除示例文章，并在 `data/site.ts` 将 `preview` 改为 `false`；这会移除预览提示并允许搜索引擎收录。
-
-## 新增博客文章
-
-在 `content/posts/` 新建 `my-first-post.md`，文件名使用小写英文、数字和连字符：
-
-```markdown
----
-title: '我的第一篇笔记'
-description: '一句话简介'
-date: '2026-10-11'
-category: '技术笔记'
-tags: ['学习记录']
-sample: false
-draft: false
----
-
-## 从这里开始
-
-正文写在这里。
-```
-
-日期使用引号。`draft: true` 的文章不会出现在页面或构建输出中；`sample: true` 会显示示例标签。分类和搜索会根据文章自动更新。当前支持 Markdown、表格和代码块，未启用 MDX/JSX。
-
-文章渲染只接受自己维护的本地 Markdown 文件。
-
-## 检查、构建与预览
-
-```bash
-cd /home/sethli/projects/personal-site
-npm run typecheck
-npm run build
-```
-
-`typecheck` 会先生成 Next.js 路由类型，因此清理 `.next/` 后也能独立运行。构建成功后，静态网页和资源位于 `out/`。
-
-开发预览：
+Playwright Chromium 仅用于构建 Mermaid 图表和浏览器验证，线上静态网站不需要运行浏览器进程。Ubuntu 的 `--with-deps` 会通过系统包管理器安装所需库，可能需要 sudo 权限；已有系统依赖时可执行 `npx playwright install chromium`。GitHub Actions 会准备构建所需浏览器和依赖。
 
 ```bash
 npm run dev
 ```
 
-默认地址为 `http://127.0.0.1:3000`，保存文件后会自动更新。检查构建结果：
+开发地址为 `http://127.0.0.1:3000`。开发脚本先严格构建内容，再同时监听文章和页面变化；修改 `.md` / `.mdx` 后自动更新，按 `Ctrl+C` 结束。
+
+| 命令 | 用途 |
+| --- | --- |
+| `npm run content:build` | 单次严格编译文章；非法日期、文件名、字段和重复 URL 会阻止构建 |
+| `npm run content:watch` | 单独监听并编译文章 |
+| `npm run github:refresh` | 刷新公开 GitHub 贡献快照 |
+| `npm run typecheck` | 先编译内容，再生成 Next.js 路由类型并运行 TypeScript |
+| `npm test` | 运行关键逻辑测试 |
+| `npm run test:browser` | 构建后检查搜索、文章交互、移动端和收藏预览；自动启动并清理静态预览 |
+| `npm run build` | 刷新贡献数据、严格编译内容、生成 `out/` |
+| `npm run preview` | 在 `http://127.0.0.1:4173` 预览构建结果 |
+
+这里的内容命令显式使用 `--strict`；Velite CLI 的默认值会覆盖配置中的严格选项，不能省掉这个参数。
+
+两个预览服务默认只监听本机；在远程服务器开发时，可通过 SSH 端口转发访问。GitHub Pages 正式网站由平台提供访问，不依赖开发预览进程。
+
+## 修改个人资料与展示
+
+- `data/site.ts`：网站名称、地址、头像、简介、兴趣、公开邮箱、GitHub、教育、经历、技能与项目列表。GitHub 使用已确认的 `Li-Guangsen`；未提供的履历保持空值，只填写真实资料。
+- `data/world.ts`：兴趣收藏的分组、标题、说明和图片。当前图片是原创示意插画，明确标注为插画；替换成自己的照片或截图后再设置相应类型与说明。
+- `public/images/`：自己维护的头像、项目图片与收藏素材；例如 `public/images/avatar.webp` 对应 `/images/avatar.webp`。
+- `app/globals.css` 与组件样式文件：配色、排版和交互样式。
+- `app/projects/[slug]/page.tsx`：项目详情；新增项目时同步补充正文。
+
+首页的 GitHub 日历展示真实公开贡献快照。每次构建以及每日定时工作流会抓取 `Li-Guangsen` 的公开贡献日历，校验账户、连续日期、每日次数和汇总值后写入 `data/github-activity.json`。网络异常时使用最近一次已验证快照，页面显示快照更新时间；不会编造贡献数据，也不需要访客提供 GitHub Token。
+
+当前仍保留预览模式与明确标记的示例文章。填好自己的资料、替换示例后，在 `data/site.ts` 将 `preview` 改为 `false`，移除预览提示并允许搜索引擎收录。此开关不会自动把示例文章变成真实个人记录，示例标签由各文章的 `sample` 字段决定。
+
+## 写一篇算法或学习笔记
+
+在 `content/posts/` 新建 `my-first-post.md`；需要交互组件时使用 `.mdx`。文件名只用小写英文、数字与连字符，它决定文章地址，修改标题不会改变 URL。
+
+```markdown
+---
+title: '今天的算法练习'
+description: '记录问题、关键思路和边界条件。'
+date: '2026-10-20'
+categories: ['算法', '学习笔记']
+tags: ['Python']
+sample: false
+published: true
+pinned: false
+toc: true
+---
+
+## 题目与思路
+
+从这里开始记录。
+```
+
+日期使用引号。旧的 `category` 单分类和 `draft` 字段继续兼容；`draft: true` 或 `published: false` 隐藏文章，`pinned: true` 置顶，`toc: false` 关闭当前文章目录。英文分类统一大小写，避免产生重复分类。
+
+完整语法与字段说明见 [content/README.md](content/README.md)。[binary-search-field-notes.mdx](content/posts/binary-search-field-notes.mdx) 是明确标记的功能示例，包括 Python 代码、数学公式、Mermaid 流程图和 `<AlgorithmSteps />`。原有 3 篇文章的文件名与 URL 保留。内容编译只处理项目维护者审阅过的本地文章；MDX 与其他源码一样可以执行组件逻辑。
+
+完成修改后检查并发布：
 
 ```bash
+npm run typecheck
+npm test
+npm run build
+npm run test:browser
 npm run preview
 ```
 
-默认地址为 `http://127.0.0.1:4173`。两个预览服务都只监听服务器本机，电脑访问需要 SSH 端口转发。按 `Ctrl+C` 停止。生产网站由 Nginx 提供访问，不需要保持预览或 Node.js 进程运行。
+## GitHub Pages 发布
+
+```bash
+git status
+git diff
+git add -A
+git commit -m "Write a new learning note"
+git push
+```
+
+推送 `main` 后，`.github/workflows/pages.yml` 自动检查、构建并上传 `out/` 到 GitHub Pages。Pull Request 只检查和构建；也可以在仓库 Actions 手动运行。Node.js 版本跟随 `.node-version`。定时工作流重建贡献日历，不需要人工新增提交。
+
+在 [Actions](https://github.com/Li-Guangsen/li-guangsen.github.io/actions) 查看 `Deploy website to GitHub Pages`；发布成功后访问 <https://li-guangsen.github.io/>。Pages 上传的是静态产物，不会把原始仓库目录或 `node_modules/` 当作网站发布。
+
+首次设置已于 2026-10-20 完成：`Settings → Pages → Build and deployment → Source` 使用 `GitHub Actions`，旧 Custom domain 绑定与源码 `CNAME` 已移除。仓库名匹配用户主页地址，资源使用根路径，不需要项目子路径。首次发布记录保留为 <https://github.com/Li-Guangsen/li-guangsen.github.io/actions/runs/39418219609>（提交 `6769b0d`）；该记录对应最初版本，不代表此后修改的发布状态。
+
+### 网站地址与以后换域名
+
+`data/site.ts` 的 `site.url` 从公开变量 `NEXT_PUBLIC_SITE_URL` 读取，默认 `https://li-guangsen.github.io`，用于站点地图与分享元数据。仓库与源文件不绑定自定义域名。
+
+Actions 读取 `Settings → Secrets and variables → Actions → Variables` 中的普通变量 `SITE_URL`。以后使用自定义域名时，设置 Pages 的 Custom domain、`SITE_URL` 和相应 DNS，再重新运行工作流。公开网址放 Variables 即可，无需保存为 Secret。
+
+本地可参考 `.env.example` 创建 `.env.local`，或临时指定构建地址：
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://li-guangsen.github.io npm run build
+```
+
+目前不执行腾讯云或 DNS 迁移。GitHub 官方说明：[自定义工作流](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)、[自定义域名](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)。
+
+## 原服务器目录与回退记录
+
+以下保留原部署记录，只在明确需要维护或回退旧站点时使用。当前 GitHub Pages 更新不需要同步服务器目录。
+
+| 目录 | 用途 |
+| --- | --- |
+| `/home/sethli/projects/personal-site` | 当前源码工作目录 |
+| 项目中的 `out/` | 当前静态构建产物 |
+| `/var/www/sethli.tech/current` | 原 Nginx 网站目录，本次重构不修改 |
+| `/home/sethli/backups/personal-site` | 独立源码、Git 历史和旧部署备份 |
 
 ## 服务器回退更新（需要时）
 
@@ -216,6 +248,8 @@ Nginx 默认站点的备份在 `/home/sethli/backups/personal-site/nginx-2026101
 
 2026-10-20 已初始化 Git 仓库，主分支为 `main`。以后备份或迁移源码时保留 `package-lock.json`，排除生成目录。
 
+本次参考站功能重构前的独立恢复点为 `/home/sethli/backups/personal-site/before-reference-rebuild-20261020-204454/`，包含 `repository.bundle`（全部已提交 Git 历史）和 `source.tar.gz`（重构前源码快照）。它们保存在项目目录之外，不会被内容构建或 Git 操作覆盖。
+
 ## Git 版本管理
 
 源码仓库位于 `/home/sethli/projects/personal-site/.git`，分支为 `main`。2026-10-20 的初始提交保存了恢复后的项目说明及当前网站源码。依赖、构建产物、环境变量文件和私钥不加入版本管理；`.gitattributes` 统一文本文件使用 LF 换行。
@@ -259,9 +293,10 @@ git bundle create "$bundle_path" --all
 git bundle verify "$bundle_path"
 ```
 
-## 实现说明
+## 实现与素材说明
 
-- 原创页面实现，栏目结构参考 neuromancer.club，未复制对方的头像、照片、文章或源码。
-- 深浅色偏好保存在本机浏览器。
-- 无数据库、登录、第三方统计或远程字体依赖。
-- `public/social-card.svg` 是矢量分享图草稿，后续可制作 PNG 以提高社交平台兼容性。
+技术路线和功能组织参考 [neuromancer.club](https://neuromancer.club/)；页面、文案、交互样式和演示素材按本站原有风格重新实现，不复用对方头像、照片、个人经历或文章。
+
+深浅色偏好保存在访客本机浏览器。线上网站不需要数据库、账户登录或常驻后端，也不接入评论与第三方统计。贡献数据在构建阶段从 GitHub 读取，页面本身读取静态快照。
+
+`public/social-card.svg` 是分享图素材；如目标社交平台要求位图，可另行制作对应 PNG。
