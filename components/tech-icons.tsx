@@ -25,9 +25,12 @@ export function TechIcon({ name, className }: { name: string; className?: string
 
   if (icon) {
     const mask = `url("/icons/tech/${icon}.svg")`;
+    // LangGraph's wide mark sits inside a square canvas with vertical padding.
+    const iconWidth = key === 'langgraph' ? 32 : 20;
+    const maskSize = key === 'langgraph' ? `${iconWidth}px ${iconWidth}px` : 'contain';
     const style: CSSProperties = {
       display: 'inline-block',
-      width: 20,
+      width: iconWidth,
       height: 20,
       flexShrink: 0,
       backgroundColor: 'currentColor',
@@ -35,8 +38,8 @@ export function TechIcon({ name, className }: { name: string; className?: string
       WebkitMaskImage: mask,
       maskRepeat: 'no-repeat',
       WebkitMaskRepeat: 'no-repeat',
-      maskSize: 'contain',
-      WebkitMaskSize: 'contain',
+      maskSize,
+      WebkitMaskSize: maskSize,
       maskPosition: 'center',
       WebkitMaskPosition: 'center',
     };
