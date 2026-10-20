@@ -4,7 +4,7 @@
 
 源码仓库：<https://github.com/Li-Guangsen/li-guangsen.github.io>。准备使用的 Pages 地址：<https://li-guangsen.github.io/>。
 
-2026-10-20 正在从现有 Nginx 服务器迁移到 GitHub Pages。发布工作流已加入源码；首次远程推送和部署仍需完成 GitHub 授权及 Pages 设置。当前域名继续由原服务器提供服务。
+2026-10-20 正在从现有 Nginx 服务器迁移到 GitHub Pages。源码和发布工作流已通过 SSH 推送到远程仓库，首次 GitHub Actions 构建与部署均已成功；GitHub Pages 的发布来源和旧域名设置仍待确认，默认网址验证正在进行。当前域名继续由原服务器提供服务。
 
 ## GitHub Pages 发布
 
@@ -26,6 +26,8 @@
 仓库名匹配 `Li-Guangsen` 的用户主页地址，所以静态资源位于根路径，不需要配置项目子路径。Pages 发布只上传 `out/`，网站源码、文章原稿和依赖不作为 Pages 文件发布。
 
 公开仓库内已经提交的源码和文章文件仍可在 GitHub 查看；`draft: true` 只控制文章是否进入生成的网站。
+
+首次已成功的发布记录：<https://github.com/Li-Guangsen/li-guangsen.github.io/actions/runs/39418219609>，源码提交为 `6769b0d`。
 
 ### 网站地址与以后换域名
 
@@ -216,7 +218,9 @@ Nginx 默认站点的备份在 `/home/sethli/backups/personal-site/nginx-2026101
 
 源码仓库位于 `/home/sethli/projects/personal-site/.git`，分支为 `main`。2026-10-20 的初始提交保存了恢复后的项目说明及当前网站源码。依赖、构建产物、环境变量文件和私钥不加入版本管理；`.gitattributes` 统一文本文件使用 LF 换行。
 
-远程 `origin` 已配置为 `https://github.com/Li-Guangsen/li-guangsen.github.io.git`，现有 GitHub 提交历史已取回并保留；首次推送需要 GitHub 写入权限。提交身份在缺少既有 Git 配置时暂用本仓库专属的 `sethli <sethli@localhost>`，不会修改全局身份；以后可以在仓库内用 `git config user.name` 和 `git config user.email` 设置自己的提交身份。
+远程 `origin` 的取回地址为 `https://github.com/Li-Guangsen/li-guangsen.github.io.git`，推送地址为 `git@github.com:Li-Guangsen/li-guangsen.github.io.git`。现有 GitHub 提交历史已合并保留，2026-10-20 已成功完成首次源码推送。提交身份在缺少既有 Git 配置时暂用本仓库专属的 `sethli <sethli@localhost>`，不会修改全局身份；以后可以在仓库内用 `git config user.name` 和 `git config user.email` 设置自己的提交身份。
+
+服务器使用仓库专用 SSH deploy key，GitHub 中的标题为 `Tencent-Tokyo-Server`，已启用写入权限。密钥通过本仓库的 `core.sshCommand` 配置使用，私钥保存在 sethli 用户的 `.ssh/` 中，不加入版本管理。此密钥用于 Git 推送；GitHub Pages 的后台设置仍通过仓库网页管理。
 
 修改前后检查状态和差异，确认修改内容后提交：
 
