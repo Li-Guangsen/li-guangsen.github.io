@@ -1,11 +1,11 @@
-# HTTP server block for sethli.tech; HTTPS will be configured after DNS is ready.
-# Serve the CONTENTS of out/ from /var/www/sethli.tech/current.
+# HTTP server block for example.com; HTTPS will be configured after DNS is ready.
+# Serve the CONTENTS of out/ from /var/www/personal-site/current.
 # Use your existing HTTPS/certificate management for this domain.
 server {
     listen 80;
     listen [::]:80;
-    server_name sethli.tech;
-    root /var/www/sethli.tech/current;
+    server_name example.com;
+    root /var/www/personal-site/current;
     index index.html;
     charset utf-8;
 

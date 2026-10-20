@@ -8,6 +8,8 @@ public/static/
 !.env.example
 .preview/
 .openai/
+.private/
+docs/private/
 next-env.d.ts
 
 # Local credentials and private keys

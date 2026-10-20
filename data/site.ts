@@ -24,9 +24,12 @@ export const site = {
   interests: ['个人项目', '技术写作', '持续学习'],
   // Example: { title: '学校或公司', description: '专业或职位', period: '2024 — 2026' }
   experience: [] as { title: string; description: string; period: string }[],
-  education: [] as { title: string; description: string; period: string }[],
+  education: [
+    { title: '山东科技大学', description: '计算机科学与技术硕士', period: 'Sep 2025 – Present' },
+    { title: '山东科技大学', description: '计算机科学与技术学士', period: 'Sep 2021 – Jun 2025' },
+  ],
   // Fill these only with technologies you want to list as your own skills.
-  skills: [] as string[],
+  skills: ['Java', 'Python', 'C', 'Spring Boot', 'FastAPI', 'MySQL', 'Redis', 'Linux', 'Docker', 'Next.js', 'Git'],
 };
 
 export type Project = {

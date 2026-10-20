@@ -1,0 +1,33 @@
+.activity { min-width: 0; margin-top: 17px; padding-top: 15px; border-top: 1px solid var(--line); }
+.activityHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 11px; }
+.activityHeading h3 { color: var(--ink); font-size: 13px; line-height: 1.5; font-weight: 600; letter-spacing: -.15px; }
+.activityHeading time { color: var(--muted); font: 10px/1.6 var(--mono); white-space: nowrap; }
+.activityScroll { overflow-x: auto; scrollbar-width: thin; padding: 4px; margin: -4px; overscroll-behavior-inline: contain; }
+.activityChart { min-width: 422px; }
+.activityMonths { display: grid; grid-template-columns: repeat(var(--weeks), minmax(0, 1fr)); gap: 2px; color: var(--muted); font: 10px/1.5 var(--mono); margin-bottom: 6px; }
+.activityMonths > span { white-space: nowrap; }
+.activityGrid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, minmax(0, 1fr)); grid-template-columns: repeat(var(--weeks), minmax(0, 1fr)); gap: 2px; }
+.activityDay, .activityLegend i { --cell-color: var(--accent-soft); background: var(--cell-color); }
+.activityDay { display: block; width: 100%; aspect-ratio: 1; padding: 0; min-width: 0; border: 1px solid color-mix(in srgb, var(--ink) 5%, transparent); border-radius: 1.5px; cursor: pointer; }
+.activityDay:hover { outline: 1px solid var(--accent); outline-offset: 1px; }
+.activityDay:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.activityDay[data-level='1'], .activityLegend i[data-level='1'] { --cell-color: #c7d8af; }
+.activityDay[data-level='2'], .activityLegend i[data-level='2'] { --cell-color: #a1bd86; }
+.activityDay[data-level='3'], .activityLegend i[data-level='3'] { --cell-color: #76995d; }
+.activityDay[data-level='4'], .activityLegend i[data-level='4'] { --cell-color: #4e7149; }
+:global([data-theme='dark']) .activityDay[data-level='1'], :global([data-theme='dark']) .activityLegend i[data-level='1'] { --cell-color: #42543a; }
+:global([data-theme='dark']) .activityDay[data-level='2'], :global([data-theme='dark']) .activityLegend i[data-level='2'] { --cell-color: #637d50; }
+:global([data-theme='dark']) .activityDay[data-level='3'], :global([data-theme='dark']) .activityLegend i[data-level='3'] { --cell-color: #8ba86c; }
+:global([data-theme='dark']) .activityDay[data-level='4'], :global([data-theme='dark']) .activityLegend i[data-level='4'] { --cell-color: #b4cb91; }
+.activityFooter { display: flex; align-items: center; justify-content: space-between; gap: 8px 14px; flex-wrap: wrap; margin-top: 10px; }
+.activityDetail { min-height: 18px; color: var(--secondary); font-size: 11px; line-height: 1.65; font-variant-numeric: tabular-nums; }
+.activityDetail strong { margin-inline: 3px; color: var(--accent); font: 600 11px var(--mono); }
+.activityLegend { display: flex; align-items: center; gap: 3px; color: var(--muted); font-size: 10px; line-height: 1.6; }
+.activityLegend > span { margin: 0 2px; }
+.activityLegend i { width: 7px; height: 7px; border-radius: 1.5px; }
+
+@media (max-width: 760px) {
+  .activity { margin-top: 15px; }
+  .activityHeading { margin-bottom: 9px; }
+  .activityDetail { font-size: 12px; }
+}

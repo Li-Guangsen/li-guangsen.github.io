@@ -1,0 +1,58 @@
+.toggle {
+  --theme-ease: cubic-bezier(.22, 1, .36, 1);
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin-left: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--secondary);
+  background: var(--surface);
+  box-shadow: 0 1px 2px #17301a04;
+  transition: background .2s, border-color .2s, color .2s, transform .28s var(--theme-ease), box-shadow .2s;
+}
+
+.toggle:hover {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: var(--accent-soft);
+  box-shadow: 0 3px 9px #17301a08;
+}
+
+.toggle:active { transform: scale(.94); }
+.toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.icons { position: relative; display: block; width: 20px; height: 20px; }
+.sun, .moon { position: absolute; inset: 0; transform-origin: center; transition: transform .5s var(--theme-ease), opacity .3s ease; }
+.sun { opacity: 1; transform: rotate(0) scale(1); }
+.moon { opacity: 0; transform: rotate(65deg) scale(.5); }
+.rays, .star { transform-origin: center; transition: transform .55s var(--theme-ease), opacity .3s; }
+.star { opacity: 0; transform: scale(.2); }
+:global([data-theme='dark']) .sun { opacity: 0; transform: rotate(-90deg) scale(.5); }
+:global([data-theme='dark']) .rays { transform: rotate(-45deg) scale(.5); }
+:global([data-theme='dark']) .moon { opacity: 1; transform: rotate(0) scale(1); }
+:global([data-theme='dark']) .star { opacity: 1; transform: scale(1); }
+
+/* Keep these separate: pseudo-elements cannot be merged into :is() by the CSS optimizer. */
+.transitionRoot:global(::view-transition-old(root)) {
+  animation: none;
+  mix-blend-mode: normal;
+  z-index: 1;
+}
+.transitionRoot:global(::view-transition-new(root)) {
+  animation: none;
+  mix-blend-mode: normal;
+  z-index: 2;
+}
+
+@media (max-width: 600px) {
+  .toggle { margin-left: 3px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle, .sun, .moon, .rays, .star { transition: none; }
+  .toggle:active { transform: none; }
+}
