@@ -11,6 +11,7 @@ let browser;
 let preview;
 let origin;
 const githubSnapshot = JSON.parse(await readFile(new URL('../data/github-profile.json', import.meta.url), 'utf8'));
+const activitySnapshot = JSON.parse(await readFile(new URL('../data/github-activity.json', import.meta.url), 'utf8'));
 
 before(async () => {
   // Each run owns its preview process and port; an existing dev server is never reused.
@@ -197,6 +198,32 @@ test('WeChat contact copies the public account and closes with Escape or outside
       assert.equal(await opener.getAttribute('aria-expanded'), 'false');
     });
   }
+});
+
+test('contribution calendar preserves every GitHub date, count and intensity and supports keyboard inspection', { timeout: 60_000 }, async () => {
+  await journey({ viewport: { width: 1440, height: 1000 } }, async (page) => {
+    await page.goto('/');
+    const calendar = page.getByRole('region', { name: 'GitHub Activity', exact: true });
+    const graph = calendar.getByRole('group', { name: `过去一年 ${activitySnapshot.total} 次 GitHub 贡献`, exact: true });
+    const renderedDays = await graph.locator('button[data-date]').evaluateAll((elements) => elements.map((element) => ({
+      date: element.getAttribute('data-date'),
+      count: Number(element.getAttribute('aria-label').match(/ · (\d+) 次贡献$/)[1]),
+      level: Number(element.getAttribute('data-level')),
+    })));
+    assert.deepEqual(renderedDays, activitySnapshot.days, 'All activity, including anonymous private counts chosen for display, must survive rendering');
+    assert.equal(renderedDays.reduce((total, day) => total + day.count, 0), activitySnapshot.total);
+    assert.equal(await calendar.getByRole('link', { name: 'GitHub Activity', exact: true }).getAttribute('href'), `https://github.com/${activitySnapshot.username}`);
+    const details = calendar.locator('[aria-live="polite"]');
+    assert.match(await details.innerText(), new RegExp(`过去一年\\s+${activitySnapshot.total}\\s+次贡献`));
+    const activeDay = activitySnapshot.days.find((day) => day.count > 0) ?? activitySnapshot.days[0];
+    await graph.locator(`button[data-date="${activeDay.date}"]`).focus();
+    assert.equal(await details.innerText(), `${activeDay.date} · ${activeDay.count} 次贡献`);
+    await page.keyboard.press('ArrowRight');
+    const nextDay = activitySnapshot.days[Math.min(activitySnapshot.days.length - 1, activitySnapshot.days.indexOf(activeDay) + 7)];
+    assert.equal(await details.innerText(), `${nextDay.date} · ${nextDay.count} 次贡献`);
+    await page.keyboard.press('Escape');
+    assert.match(await details.innerText(), new RegExp(`过去一年\\s+${activitySnapshot.total}\\s+次贡献`));
+  });
 });
 
 test('domain-independent branding and GitHub repository provenance are present without visitor API calls', { timeout: 60_000 }, async () => {

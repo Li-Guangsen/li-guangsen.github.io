@@ -37,14 +37,14 @@ export function GitHubActivity() {
 
   return <section className={styles.activity} aria-labelledby="activity-heading">
     <div className={styles.activityHeading}>
-      <h3 id="activity-heading">GitHub Activity</h3>
-      <time dateTime={activity.updatedAt} title={`公开贡献数据更新于 ${activity.updatedAt.slice(0, 10)}`}>{activity.updatedAt.slice(0, 10).replaceAll('-', '.')}</time>
+      <h3 id="activity-heading"><a href={`https://github.com/${activity.username}`} target="_blank" rel="noreferrer" title="查看 GitHub 贡献日历；统计范围遵循 GitHub 的贡献隐私设置">GitHub Activity</a></h3>
+      <time dateTime={activity.updatedAt} title={`贡献数据更新于 ${activity.updatedAt.slice(0, 10)}；每天自动同步`}>{activity.updatedAt.slice(0, 10).replaceAll('-', '.')}</time>
     </div>
-      <p id="activity-instructions" className="sr-only">过去一年的 GitHub 公开贡献记录。按方向键切换日期，Home 和 End 跳到本周起止日期。也可以点击或轻触方格查看贡献次数。</p>
+      <p id="activity-instructions" className="sr-only">与 GitHub 对外可见的贡献日历同步，包含账号选择展示的私有贡献匿名统计。按方向键切换日期，Home 和 End 跳到本周起止日期。也可以点击或轻触方格查看贡献次数。</p>
       <div className={styles.activityScroll} ref={scrollRef}>
         <div className={styles.activityChart} style={{ '--weeks': weeks } as CSSProperties}>
           <div className={styles.activityMonths} aria-hidden="true">{months.map((month) => <span key={month.date} style={{ gridColumn: `${month.column + 1} / span 3` }}>{month.label}</span>)}</div>
-          <div role="group" aria-label={`过去一年 ${activity.total} 次 GitHub 公开贡献`} aria-describedby="activity-instructions" className={styles.activityGrid} onPointerLeave={() => setDetail(null)} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setDetail(null); }}>
+          <div role="group" aria-label={`过去一年 ${activity.total} 次 GitHub 贡献`} aria-describedby="activity-instructions" className={styles.activityGrid} onPointerLeave={() => setDetail(null)} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setDetail(null); }}>
             {cells.map((day, cellIndex) => {
               if (!day) return <span key={`empty-${cellIndex}`} aria-hidden="true" />;
               const index = cellIndex - offset;
@@ -54,7 +54,7 @@ export function GitHubActivity() {
         </div>
       </div>
       <div className={styles.activityFooter}>
-        <p className={styles.activityDetail} aria-live="polite">{detail === null ? <>过去一年 <strong>{activity.total}</strong> 次公开贡献</> : dayLabel(detail)}</p>
+        <p className={styles.activityDetail} aria-live="polite">{detail === null ? <>过去一年 <strong>{activity.total}</strong> 次贡献</> : dayLabel(detail)}</p>
         <div className={styles.activityLegend} aria-label="颜色从浅到深表示贡献从少到多"><span>少</span>{[0, 1, 2, 3, 4].map((level) => <i key={level} data-level={level} aria-hidden="true" />)}<span>多</span></div>
       </div>
   </section>;

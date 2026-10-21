@@ -62,7 +62,9 @@ npm run dev
 
 品牌名称与托管地址分开配置。`site.name` 控制品牌；`site.footerDomain` 仅控制版权行的域名显示。`NEXT_PUBLIC_SITE_URL` 控制 canonical、站点地图和分享网址。本地构建默认使用 GitHub Pages 地址；正式发布时，Actions 自动读取 Pages 当前绑定的公开网址。
 
-GitHub 数据在构建时刷新并校验，访客读取本地静态快照和头像，不请求 GitHub API。网络异常时使用已验证缓存。贡献次数来自真实公开记录；Fork 保留上游来源。技术栈补充的 Agent 内容单列为探索方向，不标注掌握程度。
+GitHub 数据在构建时刷新并校验，访客读取本地静态快照和头像，不请求 GitHub API。网络异常时使用已验证缓存。贡献日历使用 GitHub 对未登录访客展示的真实日期、次数与颜色等级，每天自动同步；Fork 保留上游来源。技术栈补充的 Agent 内容单列为探索方向，不标注掌握程度。
+
+如果贡献总数少于本人登录 GitHub 后所见，在 GitHub 个人主页的贡献图右上角点击 `Contribution settings → Private contributions`，选择展示私有贡献的匿名统计，再重新构建网站。此设置只展示私有贡献数量，私有仓库名称和内容仍保持私有，详见 [GitHub 贡献可见性说明](https://docs.github.com/en/account-and-profile/how-tos/contribution-settings/manage-visibility-settings-for-private-contributions-and-achievements)。网站不使用个人访问令牌读取私有活动。
 
 当前示例文章和插画均有明确标识。填好资料、替换示例后，可将 `site.preview` 设为 `false`，允许搜索引擎收录。
 

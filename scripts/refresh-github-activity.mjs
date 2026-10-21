@@ -16,7 +16,7 @@ export function validateSnapshot(snapshot, expectedUsername = username) {
     throw new Error('Contribution snapshot belongs to a different GitHub account.');
   }
   if (!Array.isArray(snapshot.days) || snapshot.days.length < 350 || snapshot.days.length > 371) {
-    throw new Error('Expected a full year of public contribution data.');
+    throw new Error('Expected a full year of contribution calendar data.');
   }
   let previous = null;
   for (const day of snapshot.days) {
@@ -64,7 +64,7 @@ export async function refreshActivity() {
     const temporary = new URL(`${output.href}.tmp`);
     await writeFile(temporary, `${JSON.stringify(snapshot, null, 2)}\n`);
     await rename(temporary, output);
-    console.log(`GitHub activity: ${snapshot.total} public contributions across ${snapshot.days.length} days for ${username}.`);
+    console.log(`GitHub activity: ${snapshot.total} contributions visible on the public profile across ${snapshot.days.length} days for ${username}.`);
     return snapshot;
   } catch (error) {
     const cached = await readFile(output, 'utf8').then(JSON.parse).then((value) => validateSnapshot(value)).catch(() => null);
