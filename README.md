@@ -7,7 +7,7 @@
 
 个人介绍、项目展示、技术笔记与兴趣收藏。使用 Next.js、React、TypeScript、Velite 和 MDX 构建，静态导出并由 GitHub Pages 托管。
 
-[访问网站](https://li-guangsen.github.io/) · [写作说明](content/README.md) · [素材来源](docs/ASSETS.md)
+[访问网站](https://sethli.tech/) · [写作说明](content/README.md) · [素材来源](docs/ASSETS.md)
 
 ## 功能
 
@@ -60,7 +60,7 @@ npm run dev
 | `velite.config.ts` | 内容结构、校验与编译插件 |
 | `.github/workflows/pages.yml` | 检查、构建与发布 |
 
-品牌名称与托管地址分开配置。`site.name` 控制品牌；`site.footerDomain` 仅控制版权行的域名显示。`NEXT_PUBLIC_SITE_URL` 控制 canonical、站点地图和分享网址，默认使用 GitHub Pages 地址。
+品牌名称与托管地址分开配置。`site.name` 控制品牌；`site.footerDomain` 仅控制版权行的域名显示。`NEXT_PUBLIC_SITE_URL` 控制 canonical、站点地图和分享网址。本地构建默认使用 GitHub Pages 地址；正式发布时，Actions 自动读取 Pages 当前绑定的公开网址。
 
 GitHub 数据在构建时刷新并校验，访客读取本地静态快照和头像，不请求 GitHub API。网络异常时使用已验证缓存。贡献次数来自真实公开记录；Fork 保留上游来源。技术栈补充的 Agent 内容单列为探索方向，不标注掌握程度。
 
@@ -102,7 +102,7 @@ git commit -m "Update site content"
 git push
 ```
 
-推送 `main` 后自动发布到 GitHub Pages；Pull Request 运行检查和构建。Pages 的 Source 使用 `GitHub Actions`。以后绑定自定义域名时，调整 Pages 域名、DNS 和 Actions 普通变量 `SITE_URL`，再重新运行工作流。
+推送 `main` 后自动发布到 GitHub Pages；Pull Request 运行检查和构建。Pages 的 Source 使用 `GitHub Actions`。以后更换自定义域名时，调整 Pages 域名和 DNS，再重新运行工作流；网站的规范地址、站点地图和分享网址随 Pages 设置自动更新。Pull Request 不读取 Pages 配置，可用 Actions 普通变量 `SITE_URL` 指定构建网址，未设置时回退到 GitHub Pages 地址。
 
 ## 实现与素材
 

@@ -39,6 +39,7 @@ jobs:
           cache: npm
 
       - name: Configure Pages
+        id: pages
         if: github.event_name != 'pull_request'
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
 
@@ -55,6 +56,8 @@ jobs:
         run: npm run typecheck
 
       - name: Build static website
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url || vars.SITE_URL || 'https://li-guangsen.github.io' }}
         run: npm run build
 
       - name: Check browser journeys
