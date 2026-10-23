@@ -10,7 +10,7 @@ import styles from './footer.module.css';
 export function Footer() {
   return <footer className="site-footer">
     <div className="footer-top">
-      <div><Link href="/" className="footer-name" aria-label={`${site.name} 首页`}><BrandWordmark /></Link><p>保持好奇。慢慢构建。</p></div>
+      <div><Link href="/" className="footer-name" aria-label={`${site.name} 首页`}><BrandWordmark /></Link><p>学着做东西，记下学到的。</p></div>
       <div className={styles.resources}>
         <nav className="footer-links" aria-label="页脚导航">
           <Link href="/projects/">项目 <Arrow diagonal /></Link>
@@ -24,6 +24,6 @@ export function Footer() {
         </nav>
       </div>
     </div>
-    <div className="footer-bottom"><span>© {new Date().getFullYear()} {site.footerDomain || site.name}</span><span>A LITTLE CORNER OF THE INTERNET.</span></div>
+    <div className="footer-bottom"><span>© {new Date().getFullYear()} {site.footerDomain || site.name}</span><span>Built with curiosity, one commit at a time.</span></div>
   </footer>;
 }
