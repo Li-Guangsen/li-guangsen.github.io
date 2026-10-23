@@ -149,11 +149,9 @@ h2 > span, .page-heading h1 > span { color: var(--accent); }
 .project-link { display: flex; align-items: center; gap: 11px; margin-top: 24px; font-size: 13px; color: var(--accent); line-height: 1.6; }
 .project-link svg { width: 15px; }
 .home-posts { padding-top: 40px; }
-.post-list { border-top: 1px solid var(--line); }
-.post-row { display: flex; align-items: center; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--line); transition: background .2s, transform .2s; position: relative; }
-.post-row::before { content: ''; position: absolute; left: -48px; right: -48px; top: 0; bottom: 0; background: var(--accent-soft); border-radius: 8px; opacity: 0; transition: opacity .3s; z-index: -1; }
-.post-row:hover::before { opacity: 1; }
-.post-row:hover { transform: translateX(8px); }
+.post-list { border-top: 1px solid var(--line); overflow: hidden; }
+.post-row { display: flex; align-items: center; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--line); transition: background .2s, padding-left .2s; position: relative; }
+.post-row:hover { padding-left: 8px; background: var(--accent-soft); }
 .post-row:hover .post-text h3 { color: var(--accent); }
 .post-row > time { font: 11px/1.6 var(--mono); color: var(--muted); width: 96px; flex-shrink: 0; letter-spacing: 0.3px; }
 .post-text { flex: 1; min-width: 0; }
@@ -277,7 +275,8 @@ h2 > span, .page-heading h1 > span { color: var(--accent); }
   .hero { grid-template-columns: 1fr; padding-top: 32px; padding-bottom: 28px; gap: 18px; }
   .hero h1 { font-size: clamp(30px, 9vw, 40px); line-height: 1.45; margin-top: 24px; letter-spacing: -1px; }
   .hero-intro { font-size: 16px; }
-  .hero-actions { margin-top: 28px; gap: 10px; }
+  .hero-actions { margin-top: 28px; gap: 10px; flex-wrap: wrap; }
+  .button { min-height: 44px; padding: 10px 18px; font-size: 13px; }
   .hero-footnote { margin-top: 28px; font-size: 12px; gap: 14px; }
   .identity-art { height: 278px; width: 310px; justify-self: center; margin-top: 5px; }
   .identity-card { height: 236px; width: 209px; }

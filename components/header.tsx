@@ -27,9 +27,9 @@ export function Header() {
   return <header className={`site-header${compact ? ' is-compact' : ''}${menuOpen ? ' menu-open' : ''}`}><div className="header-inner">
     <Link className="brand" href="/" aria-label={`${site.name} 首页`}><BrandWordmark /></Link>
     <div className="header-actions"><nav id="site-nav" aria-label="主导航" onClick={(event) => { if ((event.target as HTMLElement).closest('a')) setMenuOpen(false); }}>{[
-      { href: '/', label: '首页', en: 'Home' },
-      { href: '/projects/', label: '项目', en: 'Work' },
-      { href: '/blog/', label: '博客', en: 'Notes' },
+      { href: '/', label: '首页', en: 'HOME' },
+      { href: '/projects/', label: '项目', en: 'PROJECTS' },
+      { href: '/blog/', label: '博客', en: 'BLOG' },
     ].map((item) => {
       const active = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href.replace(/\/$/, ''));
       return <Link key={item.href} href={item.href} className={active ? 'nav-link active' : 'nav-link'} aria-current={active ? 'page' : undefined}>{item.label}<span>{item.en}</span></Link>;
