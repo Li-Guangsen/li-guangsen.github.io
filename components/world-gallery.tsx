@@ -25,7 +25,7 @@ function ScrapbookCard({ card, constraints, reset, open, compact }: { card: Worl
     y.set(Math.min(40, Math.max(-40, y.get() + delta[event.key][1])));
   }
 
-  return <motion.article className={styles.scrapCard} style={{ x, y, rotate: compact || reduced ? 0 : card.rotation, zIndex: moving ? 5 : 1 }} drag={!compact && !reduced} dragControls={controls} dragListener={false} dragConstraints={constraints} dragElastic={0.08} dragMomentum={false} onDragStart={() => setMoving(true)} onDragEnd={() => setMoving(false)} whileHover={!reduced && !compact ? { rotate: 0 } : undefined}>
+  return <motion.article className={styles.scrapCard} style={{ x, y, rotate: compact || reduced ? 0 : card.rotation, zIndex: moving ? 5 : 1 }} drag={!compact && !reduced} dragControls={controls} dragListener={false} dragConstraints={constraints} dragElastic={0.08} dragMomentum={false} onDragStart={() => setMoving(true)} onDragEnd={() => setMoving(false)} whileHover={!reduced && !compact ? { rotate: 0 } : undefined} transition={{ type: 'tween', duration: .18, ease: [.2, .8, .2, 1] }}>
     <div className={styles.cardTopline}><span>{card.kind === 'illustration' ? '原创插画 · 展示用' : '生活记录'}</span><button type="button" className={styles.dragHandle} aria-label={`移动“${card.title}”，方向键移动，Home 复位`} aria-describedby="gallery-instructions" onKeyDown={moveWithKeys} onPointerDown={(event) => { if (!compact && !reduced) controls.start(event); }} disabled={compact || Boolean(reduced)} title="拖动，或用方向键移动">⠿</button></div>
     <button type="button" className={styles.cardImageButton} onClick={() => open(card.id)} aria-label={`放大查看：${card.title}`}>
       <img src={card.image} width="800" height="560" alt={card.alt} loading="lazy" draggable="false" />

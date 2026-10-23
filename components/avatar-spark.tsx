@@ -3,14 +3,14 @@
 import { useRef, useState, type ReactNode } from 'react';
 import styles from './showcase.module.css';
 
-export function AvatarSpark({ children, className = '', label = '给今天一点小小的庆祝' }: { children: ReactNode; className?: string; label?: string }) {
+export function AvatarSpark({ children, className = '', label = '撒点纸屑' }: { children: ReactNode; className?: string; label?: string }) {
   const lastBurst = useRef(0);
   const [message, setMessage] = useState('');
 
   async function celebrate(event: React.MouseEvent<HTMLButtonElement>) {
     if (Date.now() - lastBurst.current < 700) return;
     lastBurst.current = Date.now();
-    setMessage('保持好奇，继续创造。');
+    setMessage('🎉');
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const bounds = event.currentTarget.getBoundingClientRect();
     try {

@@ -17,13 +17,20 @@ function savedTheme() {
 
 export function ThemeToggle() {
   const [dark, setDark] = useState(false);
-  const busy = useRef(false);
+  const revision = useRef(0);
+  const targetTheme = useRef<'light' | 'dark' | null>(null);
   const activeTransition = useRef<ViewTransition | null>(null);
+  const activeReveal = useRef<Animation | null>(null);
 
   useEffect(() => {
     const preference = window.matchMedia('(prefers-color-scheme: dark)');
     const sync = () => {
+      revision.current += 1;
+      activeReveal.current?.cancel();
+      activeTransition.current?.skipTransition();
+      document.documentElement.classList.remove(styles.transitionRoot);
       const theme = savedTheme() ?? (preference.matches ? 'dark' : 'light');
+      targetTheme.current = theme;
       document.documentElement.dataset.theme = theme;
       setDark(theme === 'dark');
     };
@@ -35,16 +42,23 @@ export function ThemeToggle() {
     return () => {
       preference.removeEventListener('change', followSystem);
       window.removeEventListener('storage', followStorage);
+      revision.current += 1;
+      activeReveal.current?.cancel();
       activeTransition.current?.skipTransition();
       document.documentElement.classList.remove(styles.transitionRoot);
     };
   }, []);
 
   async function toggle(button: HTMLButtonElement) {
-    if (busy.current) return;
     const root = document.documentElement;
-    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    const next = (targetTheme.current ?? root.dataset.theme) === 'dark' ? 'light' : 'dark';
+    targetTheme.current = next;
+    const current = ++revision.current;
+    activeReveal.current?.cancel();
+    activeTransition.current?.skipTransition();
+    root.classList.remove(styles.transitionRoot);
     const apply = () => {
+      if (current !== revision.current) return;
       root.dataset.theme = next;
       flushSync(() => setDark(next === 'dark'));
       try { localStorage.setItem(storageKey, next); } catch { /* The theme also works without browser storage. */ }
@@ -59,28 +73,32 @@ export function ThemeToggle() {
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
     const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-    busy.current = true;
     root.classList.add(styles.transitionRoot);
     try {
       const transition = document.startViewTransition(apply);
       activeTransition.current = transition;
       await transition.ready;
+      if (current !== revision.current) return;
       const reveal = root.animate({
         clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`],
       }, {
-        duration: 520,
-        easing: 'cubic-bezier(.22, 1, .36, 1)',
+        duration: 320,
+        easing: 'cubic-bezier(.2, .8, .2, 1)',
         pseudoElement: '::view-transition-new(root)',
       });
-      await reveal.finished;
-      await transition.finished;
+      activeReveal.current = reveal;
+      await Promise.all([reveal.finished, transition.finished]);
     } catch {
-      activeTransition.current?.skipTransition();
-      if (root.dataset.theme !== next) apply();
+      if (current === revision.current) {
+        activeTransition.current?.skipTransition();
+        if (root.dataset.theme !== next) apply();
+      }
     } finally {
-      root.classList.remove(styles.transitionRoot);
-      activeTransition.current = null;
-      busy.current = false;
+      if (current === revision.current) {
+        root.classList.remove(styles.transitionRoot);
+        activeTransition.current = null;
+        activeReveal.current = null;
+      }
     }
   }
 

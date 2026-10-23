@@ -170,6 +170,102 @@ test('gallery lightbox supports keyboard switching, Escape and focus restoration
   });
 });
 
+test('normal motion keeps the sticky header and hovered text stationary', { timeout: 60_000 }, async () => {
+  await journey({ viewport: { width: 1440, height: 960 }, reducedMotion: 'no-preference' }, async (page) => {
+    await page.goto('/');
+    await page.evaluate(() => document.fonts.ready);
+    const frames = await page.evaluate(async () => {
+      window.scrollTo({ top: 40, behavior: 'instant' });
+      const samples = [];
+      const start = performance.now();
+      await new Promise((resolve) => {
+        function sample() {
+          samples.push({ scroll: window.scrollY, height: document.querySelector('.header-inner').getBoundingClientRect().height });
+          if (performance.now() - start < 650) requestAnimationFrame(sample);
+          else resolve();
+        }
+        requestAnimationFrame(sample);
+      });
+      return samples;
+    });
+    for (const frame of frames) {
+      assert.equal(frame.height, frames[0].height, 'The header must not resize after the user stops scrolling');
+      assert.equal(frame.scroll, 40, 'Changing the sticky header must not feed back into scroll position');
+    }
+    assert.equal(await page.evaluate(() => document.getAnimations().filter((animation) => animation.effect?.getTiming().iterations === Infinity).length), 0);
+
+    const row = page.locator('.post-row').first();
+    await row.scrollIntoViewIfNeeded();
+    await page.mouse.move(0, 0);
+    const before = await row.locator('.post-text').boundingBox();
+    await row.hover();
+    await page.waitForTimeout(250);
+    assert.deepEqual(await row.locator('.post-text').boundingBox(), before, 'Hover feedback must not move or reflow article text');
+
+    const project = page.locator('.project-card').first();
+    await project.hover();
+    assert.equal(await project.evaluate((element) => getComputedStyle(element).transform), 'none', 'The project card must not mix pointer-driven and CSS transforms');
+    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: /拾光/ }).click();
+    await page.waitForURL('**/the-world/');
+    assert.equal(await page.locator('.world-transition').count(), 0);
+  });
+});
+
+test('theme changes honor rapid clicks, persist on reload and settle without an overlay', { timeout: 60_000 }, async () => {
+  await journey({ viewport: { width: 1440, height: 960 }, reducedMotion: 'no-preference', colorScheme: 'light' }, async (page) => {
+    await page.goto('/');
+    const settled = () => page.waitForFunction(() => !document.getAnimations().some((animation) => animation.playState === 'running'));
+    await page.getByRole('button', { name: '切换深色模式', exact: true }).click();
+    await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
+    await settled();
+    assert.equal(await page.evaluate(() => localStorage.getItem('sethli-theme')), 'dark');
+    await page.reload();
+    await page.getByRole('button', { name: '切换浅色模式', exact: true }).click();
+    await settled();
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'light');
+    await page.evaluate(async () => {
+      const toggle = document.querySelector('button[aria-label="切换深色模式"]');
+      for (let index = 0; index < 3; index++) {
+        toggle.click();
+        await new Promise((resolve) => setTimeout(resolve, 60));
+      }
+    });
+    await settled();
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
+    assert.equal(await page.evaluate(() => localStorage.getItem('sethli-theme')), 'dark');
+    assert.equal(await page.getByRole('button', { name: '切换浅色模式', exact: true }).getAttribute('aria-pressed'), 'true');
+    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '项目 PROJECTS', exact: true }).click();
+    await page.waitForURL('**/projects/');
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
+  });
+});
+
+test('theme switching works with reduced motion and without the View Transition API or storage', { timeout: 60_000 }, async () => {
+  for (const fallback of [false, true]) {
+    await journey({ viewport: { width: 390, height: 844 }, reducedMotion: fallback ? 'no-preference' : 'reduce', colorScheme: 'light' }, async (page) => {
+      await page.addInitScript((withoutStorage) => {
+        if (withoutStorage) {
+          Object.defineProperty(document, 'startViewTransition', { value: undefined });
+          Storage.prototype.getItem = () => { throw new Error('Storage unavailable'); };
+          Storage.prototype.setItem = () => { throw new Error('Storage unavailable'); };
+        } else {
+          document.startViewTransition = () => {
+            document.documentElement.dataset.unexpectedTransition = 'true';
+            throw new Error('Reduced motion must not start a page transition');
+          };
+        }
+      }, fallback);
+      await page.goto('/');
+      await page.getByRole('button', { name: '切换深色模式', exact: true }).click();
+      await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
+      await page.getByRole('button', { name: '切换浅色模式', exact: true }).click();
+      await page.waitForFunction(() => document.documentElement.dataset.theme === 'light');
+      assert.equal(await page.locator('html').getAttribute('data-unexpected-transition'), null);
+      await assertFitsViewport(page);
+    });
+  }
+});
+
 test('WeChat contact copies the public account and closes with Escape or outside click', { timeout: 60_000 }, async () => {
   for (const width of [1440, 320]) {
     await journey({ viewport: { width, height: 960 }, permissions: ['clipboard-read', 'clipboard-write'] }, async (page) => {
@@ -242,7 +338,7 @@ test('domain-independent branding and GitHub repository provenance are present w
     await page.getByRole('link', { name: '浏览仓库' }).click();
     await page.waitForURL('**/projects/#github-repositories');
     const repositories = page.locator('#github-collection');
-    await repositories.getByRole('heading', { name: '代码的另一面.' }).waitFor();
+    await repositories.getByRole('heading', { name: 'GitHub 仓库.' }).waitFor();
     const groups = repositories.locator('h3');
     assert.match(await groups.nth(0).innerText(), /本人创建/);
     assert.match(await groups.nth(1).innerText(), /Fork/);

@@ -13,18 +13,14 @@ import { ThemeToggle } from './theme-toggle';
 export function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [compact, setCompact] = useState(false);
   const search = useSiteSearch();
   useEffect(() => {
-    const onScroll = () => setCompact(window.scrollY > 32);
     const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') setMenuOpen(false); };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('keydown', onKey);
-    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('keydown', onKey); };
+    return () => { window.removeEventListener('keydown', onKey); };
   }, []);
   useEffect(() => { setMenuOpen(false); }, [pathname]);
-  return <header className={`site-header${compact ? ' is-compact' : ''}${menuOpen ? ' menu-open' : ''}`}><div className="header-inner">
+  return <header className={`site-header${menuOpen ? ' menu-open' : ''}`}><div className="header-inner">
     <Link className="brand" href="/" aria-label={`${site.name} 首页`}><BrandWordmark /></Link>
     <div className="header-actions"><nav id="site-nav" aria-label="主导航" onClick={(event) => { if ((event.target as HTMLElement).closest('a')) setMenuOpen(false); }}>{[
       { href: '/', label: '首页', en: 'HOME' },

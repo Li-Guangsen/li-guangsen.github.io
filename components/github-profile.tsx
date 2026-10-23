@@ -7,9 +7,7 @@ import styles from './github-profile.module.css';
 export function GitHubProfile() {
   return <section className={styles.profile} aria-labelledby="github-profile-heading">
     <div className={styles.profileMain}>
-      <div className={styles.kicker}><span aria-hidden="true">↳</span> BUILDING IN PUBLIC</div>
-      <h2 id="github-profile-heading">在 GitHub，继续动手<span>.</span></h2>
-      <p className={styles.intro}>从一个仓库开始，把想法变成可以打开的东西。</p>
+      <h2 id="github-profile-heading">GitHub<span>.</span></h2>
       <div className={styles.identity}>
         <a href={githubProfile.url} target="_blank" rel="noopener noreferrer" className={styles.account}>
           <Image src={githubProfile.avatarPath} alt={`${githubProfile.name || githubProfile.login} 的 GitHub 头像`} width={52} height={52} className={styles.avatar} />

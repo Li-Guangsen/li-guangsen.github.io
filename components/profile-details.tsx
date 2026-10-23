@@ -25,7 +25,7 @@ export function ProfileDetails({ education, skills, exploring = ['LangGraph', 'M
 
   return <div className={styles.profileDetails}>
     {education.length > 0 && <section className={styles.education} aria-labelledby="education-heading">
-      <div className={styles.heading}><span className="eyebrow">LEARNING JOURNEY</span><h2 id="education-heading">Education<span>.</span></h2></div>
+      <div className={styles.heading}><h2 id="education-heading">Education<span>.</span></h2></div>
       <ol className={styles.educationList}>
         {education.map((item) => <li className={styles.educationEntry} key={`${item.title}-${item.period}`}>
           <SchoolSeal school={item.title} />
@@ -39,7 +39,7 @@ export function ProfileDetails({ education, skills, exploring = ['LangGraph', 'M
     </section>}
 
     {skills.length > 0 && <section className={styles.technologies} aria-labelledby="tech-stack-heading">
-      <div className={styles.heading}><span className="eyebrow">BACKEND & BEYOND</span><h2 id="tech-stack-heading">Tech Stack<span>.</span></h2></div>
+      <div className={styles.heading}><h2 id="tech-stack-heading">Tech Stack<span>.</span></h2></div>
       <ul className={styles.chips} aria-label="技术栈">
         {skills.map((skill) => <li className={styles.chip} key={skill}><TechIcon name={skill} /><span>{skill}</span></li>)}
       </ul>

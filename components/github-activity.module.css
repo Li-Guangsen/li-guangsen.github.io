@@ -7,7 +7,7 @@
 .activityMonths { display: grid; grid-template-columns: repeat(var(--weeks), minmax(0, 1fr)); gap: 2px; color: var(--muted); font: 10px/1.5 var(--mono); margin-bottom: 6px; }
 .activityMonths > span { white-space: nowrap; }
 .activityGrid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, minmax(0, 1fr)); grid-template-columns: repeat(var(--weeks), minmax(0, 1fr)); gap: 2px; }
-.activityDay, .activityLegend i { --cell-color: var(--accent-soft); background: var(--cell-color); }
+.activityDay, .activityLegend i { --cell-color: color-mix(in srgb, var(--ink) 5%, var(--surface)); background: var(--cell-color); }
 .activityDay { display: block; width: 100%; aspect-ratio: 1; padding: 0; min-width: 0; border: 1px solid color-mix(in srgb, var(--ink) 5%, transparent); border-radius: 1.5px; cursor: pointer; }
 .activityDay:hover { outline: 1px solid var(--accent); outline-offset: 1px; }
 .activityDay:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
