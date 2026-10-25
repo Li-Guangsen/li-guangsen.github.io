@@ -6,6 +6,7 @@ import { worldCollections, type WorldCard, type WorldCollection } from '@/data/w
 import styles from './showcase.module.css';
 
 const allCards = worldCollections.flatMap((collection) => collection.cards);
+const cardLabels = { illustration: '展示插画', photo: '生活记录', film: '电影剧照' };
 
 function ScrapbookCard({ card, constraints, reset, open, compact }: { card: WorldCard; constraints: React.RefObject<HTMLDivElement | null>; reset: number; open: (id: string) => void; compact: boolean }) {
   const x = useMotionValue(0);
@@ -46,7 +47,7 @@ function ScrapbookCard({ card, constraints, reset, open, compact }: { card: Worl
   }
 
   return <motion.article className={styles.scrapCard} style={{ x, y, rotateX, rotateY, transformPerspective: 800, rotate: compact || reduced ? 0 : card.rotation, zIndex: moving ? 5 : 1 }} drag={!compact && !reduced} dragControls={controls} dragListener={false} dragConstraints={constraints} dragElastic={0.08} dragMomentum={false} onDragStart={() => { setMoving(true); resetTilt(); }} onDragEnd={() => { setMoving(false); resetTilt(); }} onPointerMove={tilt} onPointerLeave={resetTilt} onPointerCancel={resetTilt} whileHover={!reduced && !compact ? { rotate: 0, scale: 1.02 } : undefined} whileDrag={{ scale: 1.03, rotate: 0 }} transition={{ type: 'spring', stiffness: 280, damping: 26, mass: .5 }}>
-    <div className={styles.cardTopline}><span>{card.kind === 'illustration' ? '展示插画' : '生活记录'}</span><button type="button" className={styles.dragHandle} aria-label={`移动“${card.title}”，方向键移动，Home 复位`} aria-describedby="gallery-instructions" onKeyDown={moveWithKeys} onPointerDown={(event) => { if (!compact && !reduced) controls.start(event); }} disabled={compact || Boolean(reduced)} title="拖动，或用方向键移动">⠿</button></div>
+    <div className={styles.cardTopline}><span>{cardLabels[card.kind]}</span><button type="button" className={styles.dragHandle} aria-label={`移动“${card.title}”，方向键移动，Home 复位`} aria-describedby="gallery-instructions" onKeyDown={moveWithKeys} onPointerDown={(event) => { if (!compact && !reduced) controls.start(event); }} disabled={compact || Boolean(reduced)} title="拖动，或用方向键移动">⠿</button></div>
     <button type="button" className={styles.cardImageButton} onClick={() => open(card.id)} aria-label={`放大查看：${card.title}`}>
       <img src={card.image} width="800" height="560" alt={card.alt} style={{ objectPosition: card.imagePosition }} loading="lazy" draggable="false" />
       <span className={styles.expandHint} aria-hidden="true">↗</span>
@@ -100,7 +101,7 @@ export function WorldGallery() {
       if (event.key === 'ArrowRight') { event.preventDefault(); change(1); }
     }}>
       {card && <div className={styles.lightboxContent}>
-        <div className={styles.lightboxTopline}><span>{card.kind === 'illustration' ? '原创插画 · 展示用，非个人照片' : '生活记录'}</span><button type="button" autoFocus className={styles.lightboxClose} onClick={() => setPreviewOpen(false)} aria-label="关闭图片预览">×</button></div>
+        <div className={styles.lightboxTopline}><span>{card.kind === 'illustration' ? '原创插画 · 展示用，非个人照片' : cardLabels[card.kind]}</span><button type="button" autoFocus className={styles.lightboxClose} onClick={() => setPreviewOpen(false)} aria-label="关闭图片预览">×</button></div>
         <img key={card.id} src={card.image} alt={card.alt} width="800" height="560" />
         <div className={styles.lightboxFooter}><div><h2 id="lightbox-title">{card.title}</h2><p id="lightbox-caption">{card.caption}</p></div><div className={styles.lightboxNavigation}><button type="button" onClick={() => change(-1)} aria-label="上一张图片">←</button><span>{current + 1} / {allCards.length}</span><button type="button" onClick={() => change(1)} aria-label="下一张图片">→</button></div></div>
       </div>}
