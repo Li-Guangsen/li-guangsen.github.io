@@ -9,7 +9,7 @@ export const metadata = pageMetadata('项目', '个人项目、源码和学习�
 
 export default function ProjectsPage() {
   return <div className="inner-page textured-page">
-    <div className="page-heading"><h1>Projects</h1><p>个人项目与公开仓库。</p></div>
+    <div className="page-heading"><h1>项目</h1><p>个人项目与公开仓库。</p></div>
     <div className="projects-list">{projects.map((project) => <ProjectCard key={project.slug} project={project} />)}</div>
     <GitHubRepositories />
     {learning.length > 0 && <section className="learning-section" aria-labelledby="learning-heading">

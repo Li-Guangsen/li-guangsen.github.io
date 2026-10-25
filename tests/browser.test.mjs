@@ -137,7 +137,7 @@ test('mobile navigation and collapsible article contents fit 390 px and 320 px s
       await page.goto('/');
       await assertFitsViewport(page);
       await page.getByRole('button', { name: '打开菜单', exact: true }).click();
-      await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: 'Blog', exact: true }).click();
+      await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '博客', exact: true }).click();
       await page.waitForURL('**/blog/');
       await page.getByRole('button', { name: '打开菜单', exact: true }).waitFor();
       await assertFitsViewport(page);
@@ -207,7 +207,7 @@ test('normal motion keeps the sticky header and hovered text stationary', { time
     const project = page.locator('.project-card').first();
     await project.hover();
     assert.equal(await project.evaluate((element) => getComputedStyle(element).transform), 'none', 'The project card must not mix pointer-driven and CSS transforms');
-    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '「The World」', exact: true }).click();
+    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '拾光', exact: true }).click();
     await page.waitForURL('**/the-world/');
     assert.equal(await page.locator('.world-transition').count(), 0);
 
@@ -259,7 +259,7 @@ test('theme changes honor rapid clicks, persist on reload and settle without an 
     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
     assert.equal(await page.evaluate(() => localStorage.getItem('sethli-theme')), 'dark');
     assert.equal(await page.getByRole('button', { name: '切换浅色模式', exact: true }).getAttribute('aria-pressed'), 'true');
-    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: 'Projects', exact: true }).click();
+    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '项目', exact: true }).click();
     await page.waitForURL('**/projects/');
     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
   });
@@ -360,7 +360,7 @@ test('domain-independent branding and GitHub repository provenance are present w
     const icons = await page.locator('link[rel="icon"]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')));
     assert.ok(icons.includes('/icon.svg'));
     assert.ok(icons.includes('/brand/favicon-16.png'));
-    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: 'Projects', exact: true }).click();
+    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '项目', exact: true }).click();
     await page.waitForURL('**/projects/');
     const repositories = page.locator('#github-collection');
     await repositories.getByRole('heading', { name: 'GitHub', exact: true }).waitFor();

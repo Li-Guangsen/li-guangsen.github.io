@@ -11,10 +11,10 @@ import { ThemeToggle } from './theme-toggle';
 import { ContactMenu } from './contact-menu';
 
 const links = [
-  { href: '/', label: 'README' },
-  { href: '/projects/', label: 'Projects' },
-  { href: '/blog/', label: 'Blog' },
-  { href: '/the-world/', label: '「The World」' },
+  { href: '/', label: '首页' },
+  { href: '/projects/', label: '项目' },
+  { href: '/blog/', label: '博客' },
+  { href: '/the-world/', label: '拾光' },
 ];
 
 export function Header() {

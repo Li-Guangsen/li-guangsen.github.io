@@ -12,7 +12,7 @@
 ## 功能
 
 - 居中头像与简介、单栏贡献日历、教育经历和技术栈；布局参考 neuromancer.club。
-- Projects 独立展示项目卡片、GitHub 资料与仓库，区分本人创建与 Fork。
+- 项目页独立展示项目卡片、GitHub 资料与仓库，区分本人创建与 Fork。
 - Contact 菜单与页脚提供 GitHub、微信号复制、邮箱联系入口。
 - Markdown / MDX 写作，支持分类、标签、置顶、分页和全站快捷搜索。
 - 文章目录、阅读进度、关联文章、代码高亮与复制、KaTeX 公式、Mermaid 图表及 React 交互组件。
