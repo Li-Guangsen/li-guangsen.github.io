@@ -10,9 +10,8 @@ export default function Home() {
       <AvatarSpark className="profile-avatar" label="点击头像，撒点纸屑">
         <img src={githubProfile.avatarPath} alt={`${site.displayName} 的 GitHub 头像`} width="112" height="112" fetchPriority="high" />
       </AvatarSpark>
-      <h1 id="intro-heading">{site.name}</h1>
-      <p className="profile-byline">{site.displayName} <span aria-hidden="true">·</span> <a href={site.github} target="_blank" rel="noopener noreferrer">@{githubProfile.login}</a></p>
-      <div className="profile-bio"><p>{site.role}</p><p>{site.bio}</p></div>
+      <h1 id="intro-heading"><a href={site.github} target="_blank" rel="noopener noreferrer">@{githubProfile.login}</a></h1>
+      <div className="profile-bio">{site.bio.map((line) => <p key={line}>{line}</p>)}</div>
     </section>
     <GitHubActivity />
     {site.experience.length > 0 && <section className="experience-section" aria-labelledby="experience-heading">

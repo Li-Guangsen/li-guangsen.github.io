@@ -461,7 +461,7 @@ test('visible search works on every main route and restores focus on desktop and
 test('floating navigation and pointer effects settle, preserve hit targets and respect reduced motion', { timeout: 60_000 }, async () => {
   await journey({ viewport: { width: 1440, height: 960 }, reducedMotion: 'no-preference' }, async (page) => {
     await page.goto('/');
-    await page.getByText('后端开发学习中，偶尔玩前端，分享知识', { exact: true }).waitFor();
+    await page.getByText('苦命研究生，CS 在读', { exact: true }).waitFor();
     const full = await page.locator('.header-inner').boundingBox();
     await page.evaluate(() => window.scrollTo({ top: 160, behavior: 'instant' }));
     await page.waitForFunction(() => document.querySelector('.site-header')?.classList.contains('is-floating'));

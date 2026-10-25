@@ -3,8 +3,13 @@ export const site = {
   // The brand is independent of whichever domain hosts the website.
   name: 'sethli',
   displayName: '李广森',
-  role: '山东科技大学 · 计算机科学与技术硕士在读',
-  bio: '后端开发学习中，偶尔玩前端，分享知识',
+  bio: [
+    '苦命研究生，CS 在读',
+    '徒步佬一枚，看世界，也找自己',
+    '电影爱好者，魂系游戏玩家',
+    '喜欢折腾技术，后端开发学习中',
+    '偶尔写点东西，记录思考',
+  ],
   // Displayed only in the footer copyright; it does not control hosting or branding.
   footerDomain: 'sethli.tech',
   // Public build-time URL; set NEXT_PUBLIC_SITE_URL when moving to a custom domain.
