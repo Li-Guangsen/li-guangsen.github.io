@@ -1,5 +1,6 @@
 import { forkedRepositories, githubDate, githubProfile, githubUpdatedAt, ownRepositories, type GitHubRepository } from '@/lib/github';
 import styles from './github-profile.module.css';
+import { GitHubProfile } from './github-profile';
 
 function RepositoryCard({ repository }: { repository: GitHubRepository }) {
   return <article className={styles.repository}>
@@ -23,9 +24,10 @@ function RepositoryCard({ repository }: { repository: GitHubRepository }) {
 export function GitHubRepositories() {
   return <section className={styles.repositories} aria-labelledby="github-repositories" id="github-collection">
     <div className={styles.collectionHeading}>
-      <div><h2 id="github-repositories">GitHub 仓库<span>.</span></h2></div>
+      <div><h2 id="github-repositories">GitHub</h2></div>
       <a href={`${githubProfile.url}?tab=repositories`} target="_blank" rel="noopener noreferrer" className={styles.allRepositories}>全部 {githubProfile.publicRepos} 个仓库 <span aria-hidden="true">↗</span></a>
     </div>
+    <GitHubProfile />
     <div className={styles.repositoryGroup}>
       <div className={styles.groupHeading}><h3>本人创建<span>{ownRepositories.length.toString().padStart(2, '0')}</span></h3></div>
       <div className={styles.repositoryGrid}>{ownRepositories.map((repository) => <RepositoryCard key={repository.fullName} repository={repository} />)}</div>
@@ -36,6 +38,6 @@ export function GitHubRepositories() {
       <div className={styles.repositoryGrid}>{forkedRepositories.map((repository) => <RepositoryCard key={repository.fullName} repository={repository} />)}</div>
       {forkedRepositories.length === 0 && <p className={styles.empty}>暂时没有公开的 Fork 仓库。</p>}
     </div>
-    <p className={styles.snapshotNote}>数据来自 GitHub 公开接口，更新于 <time dateTime={githubUpdatedAt}>{githubDate(githubUpdatedAt)}</time>。Star 和 Fork 数为这个账号下各仓库的数据。</p>
+    <p className={styles.snapshotNote}>同步于 <time dateTime={githubUpdatedAt}>{githubDate(githubUpdatedAt)}</time> · GitHub 公开仓库</p>
   </section>;
 }

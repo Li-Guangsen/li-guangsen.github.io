@@ -3,5 +3,14 @@ import type { PostSummary } from '@/lib/posts';
 import { Arrow } from './icons';
 
 export function PostRow({ post }: { post: PostSummary }) {
-  return <Link href={`/blog/${post.slug}/`} className="post-row"><time dateTime={post.date}>{post.date.replaceAll('-', '.')}</time><div className="post-text"><div className="post-title-line"><h3>{post.title}</h3>{post.pinned && <span className="pinned-label">置顶</span>}{post.sample && <span className="sample-label">示例</span>}</div><p>{post.description}</p><div className="post-mobile-meta">{post.category}<span>·</span>{post.minutes} 分钟阅读</div></div><span className="post-category">{post.category}</span><Arrow className="post-arrow" /></Link>;
+  const labels = [...new Set([...post.tags, ...post.categories])];
+  return <Link href={`/blog/${post.slug}/`} className="post-row">
+    <div className="post-labels">
+      {post.pinned && <span className="pinned-label">置顶</span>}
+      {post.sample && <span className="sample-label">示例</span>}
+      {labels.map((label) => <span key={label}>{label}</span>)}
+    </div>
+    <div className="post-text"><h3>{post.title}</h3><p>{post.description}</p></div>
+    <div className="post-bottom"><time dateTime={post.date}>{post.date}</time><span className="post-read">{post.minutes} 分钟阅读 <Arrow /></span></div>
+  </Link>;
 }

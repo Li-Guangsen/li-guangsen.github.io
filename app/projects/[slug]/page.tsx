@@ -22,7 +22,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const notes = project.notes || [{ title: '关于这个项目', paragraphs: [project.description] }];
   return <article className="inner-page project-detail">
     <Link className="back-link" href="/projects/">← 返回项目</Link>
-    <div className="page-heading"><span className="eyebrow">{project.eyebrow} / {project.year}</span><h1>{project.title}<span>.</span></h1><p>{project.description}</p><div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div></div>
+    <div className="page-heading"><h1>{project.title}</h1><p>{project.description}</p><div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div></div>
     <ProjectVisual project={project} />
     <div className="detail-body"><div className="detail-summary"><span className="eyebrow">PROJECT NOTES</span><span className="status-label"><span className="green-dot" />{project.status}</span></div><div className="prose">{notes.map((note) => <section key={note.title}><h2>{note.title}</h2>{note.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{note.items && <ul>{note.items.map((item) => <li key={item}>{item}</li>)}</ul>}</section>)}</div></div>
     <div className="project-actions">{project.github && <a className="button button-primary" href={project.github} target="_blank" rel="noopener noreferrer">查看源码 <Arrow diagonal /></a>}{project.url && <a className="button button-text" href={project.url} target="_blank" rel="noopener noreferrer">访问项目 <Arrow diagonal /></a>}</div>

@@ -137,7 +137,7 @@ test('mobile navigation and collapsible article contents fit 390 px and 320 px s
       await page.goto('/');
       await assertFitsViewport(page);
       await page.getByRole('button', { name: '打开菜单', exact: true }).click();
-      await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '博客 BLOG' }).click();
+      await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: 'Blog', exact: true }).click();
       await page.waitForURL('**/blog/');
       await page.getByRole('button', { name: '打开菜单', exact: true }).waitFor();
       await assertFitsViewport(page);
@@ -194,6 +194,7 @@ test('normal motion keeps the sticky header and hovered text stationary', { time
     }
     assert.equal(await page.evaluate(() => document.getAnimations().filter((animation) => animation.effect?.getTiming().iterations === Infinity).length), 0);
 
+    await page.goto('/blog/');
     const row = page.locator('.post-row').first();
     await row.scrollIntoViewIfNeeded();
     await page.mouse.move(0, 0);
@@ -202,12 +203,33 @@ test('normal motion keeps the sticky header and hovered text stationary', { time
     await page.waitForTimeout(250);
     assert.deepEqual(await row.locator('.post-text').boundingBox(), before, 'Hover feedback must not move or reflow article text');
 
+    await page.goto('/projects/');
     const project = page.locator('.project-card').first();
     await project.hover();
     assert.equal(await project.evaluate((element) => getComputedStyle(element).transform), 'none', 'The project card must not mix pointer-driven and CSS transforms');
-    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: /拾光/ }).click();
+    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '「The World」', exact: true }).click();
     await page.waitForURL('**/the-world/');
     assert.equal(await page.locator('.world-transition').count(), 0);
+
+    const handle = page.getByRole('button', { name: /^移动“/ }).first();
+    await handle.waitFor({ state: 'visible' });
+    await page.waitForFunction(() => !document.querySelector('button[aria-label^="移动“"]')?.disabled);
+    const card = handle.locator('xpath=ancestor::article');
+    const initial = await card.evaluate(el => new DOMMatrix(getComputedStyle(el).transform).m41);
+    await handle.focus();
+    await page.keyboard.press('ArrowRight');
+    await page.waitForFunction(() => new DOMMatrix(getComputedStyle(document.querySelector('[data-the-world-page] article')).transform).m41 === 12);
+    await page.keyboard.press('Home');
+    await page.waitForFunction(() => new DOMMatrix(getComputedStyle(document.querySelector('[data-the-world-page] article')).transform).m41 === 0);
+    assert.equal(await card.evaluate(el => new DOMMatrix(getComputedStyle(el).transform).m41), initial);
+    const bounds = await handle.boundingBox();
+    await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(bounds.x + bounds.width / 2 + 32, bounds.y + bounds.height / 2 + 20, { steps: 8 });
+    await page.mouse.up();
+    assert.ok(Math.abs(await card.evaluate(el => new DOMMatrix(getComputedStyle(el).transform).m41) - initial) > 8, 'Dragging the photo handle must move its card');
+    await page.getByRole('button', { name: '重新摆好Digital World的卡片', exact: true }).click();
+    await page.waitForFunction(() => new DOMMatrix(getComputedStyle(document.querySelector('[data-the-world-page] article')).transform).m41 === 0);
   });
 });
 
@@ -215,6 +237,9 @@ test('theme changes honor rapid clicks, persist on reload and settle without an 
   await journey({ viewport: { width: 1440, height: 960 }, reducedMotion: 'no-preference', colorScheme: 'light' }, async (page) => {
     await page.goto('/');
     const settled = () => page.waitForFunction(() => !document.getAnimations().some((animation) => animation.playState === 'running'));
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark', 'First visits use the reference design’s dark theme');
+    await page.getByRole('button', { name: '切换浅色模式', exact: true }).click();
+    await settled();
     await page.getByRole('button', { name: '切换深色模式', exact: true }).click();
     await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
     await settled();
@@ -234,7 +259,7 @@ test('theme changes honor rapid clicks, persist on reload and settle without an 
     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
     assert.equal(await page.evaluate(() => localStorage.getItem('sethli-theme')), 'dark');
     assert.equal(await page.getByRole('button', { name: '切换浅色模式', exact: true }).getAttribute('aria-pressed'), 'true');
-    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '项目 PROJECTS', exact: true }).click();
+    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: 'Projects', exact: true }).click();
     await page.waitForURL('**/projects/');
     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
   });
@@ -256,10 +281,10 @@ test('theme switching works with reduced motion and without the View Transition 
         }
       }, fallback);
       await page.goto('/');
-      await page.getByRole('button', { name: '切换深色模式', exact: true }).click();
-      await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
       await page.getByRole('button', { name: '切换浅色模式', exact: true }).click();
       await page.waitForFunction(() => document.documentElement.dataset.theme === 'light');
+      await page.getByRole('button', { name: '切换深色模式', exact: true }).click();
+      await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
       assert.equal(await page.locator('html').getAttribute('data-unexpected-transition'), null);
       await assertFitsViewport(page);
     });
@@ -331,14 +356,14 @@ test('domain-independent branding and GitHub repository provenance are present w
     await page.goto('/');
     assert.equal(await page.title(), 'sethli');
     assert.equal(await page.locator('header.site-header .brand svg').count(), 1);
-    assert.equal(await page.locator('.identity-letter img').getAttribute('src'), '/brand/avatar-512.png');
+    assert.equal(await page.locator('.profile-avatar img').getAttribute('src'), '/images/github-avatar.png');
     const icons = await page.locator('link[rel="icon"]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')));
     assert.ok(icons.includes('/icon.svg'));
     assert.ok(icons.includes('/brand/favicon-16.png'));
-    await page.getByRole('link', { name: '浏览仓库' }).click();
-    await page.waitForURL('**/projects/#github-repositories');
+    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: 'Projects', exact: true }).click();
+    await page.waitForURL('**/projects/');
     const repositories = page.locator('#github-collection');
-    await repositories.getByRole('heading', { name: 'GitHub 仓库.' }).waitFor();
+    await repositories.getByRole('heading', { name: 'GitHub', exact: true }).waitFor();
     const groups = repositories.locator('h3');
     assert.match(await groups.nth(0).innerText(), /本人创建/);
     assert.match(await groups.nth(1).innerText(), /Fork/);
@@ -358,5 +383,43 @@ test('domain-independent branding and GitHub repository provenance are present w
       assert.ok((await page.locator('meta[name="twitter:image"]').getAttribute('content')).endsWith('/brand/social-card.png'));
     }
     assert.deepEqual(githubRequests, [], 'Visitors must receive static GitHub snapshots');
+  });
+});
+
+test('reference layout and Contact work on desktop and narrow mobile screens', { timeout: 60_000 }, async () => {
+  await journey({ viewport: { width: 1440, height: 1000 }, permissions: ['clipboard-read', 'clipboard-write'] }, async (page) => {
+    await page.goto('/');
+    const layout = await page.locator('.home-page').boundingBox();
+    const avatar = await page.locator('.profile-avatar').boundingBox();
+    assert.equal(layout.width, 576);
+    assert.ok(Math.abs(avatar.x + avatar.width / 2 - (layout.x + layout.width / 2)) < 1, 'The profile avatar must stay centered');
+    assert.equal(await page.locator('.home-page .project-card, .home-page .post-row').count(), 0, 'Project and article collections belong on their own routes');
+    const opener = page.getByRole('button', { name: 'Contact', exact: true });
+    await opener.click();
+    const contact = page.getByRole('region', { name: '联系方式', exact: true });
+    await contact.getByRole('button', { name: '复制微信号', exact: true }).click();
+    assert.equal(await page.evaluate(() => navigator.clipboard.readText()), 'Quenching_raw');
+    assert.equal(await contact.getByRole('link', { name: /邮箱/ }).getAttribute('href'), 'mailto:liguangsen60@qq.com');
+    await page.keyboard.press('Escape');
+    assert.equal(await contact.isVisible(), false);
+    assert.equal(await opener.evaluate(el => el === document.activeElement), true);
+    await opener.click();
+    await page.locator('h1').click();
+    assert.equal(await contact.isVisible(), false);
+
+    for (const width of [768, 390, 320]) {
+      await page.setViewportSize({ width, height: 844 });
+      for (const route of ['/', '/projects/', '/blog/', '/the-world/']) {
+        await page.goto(route);
+        await assertFitsViewport(page);
+      }
+      await page.getByRole('button', { name: '打开菜单', exact: true }).click();
+      const mobileContacts = page.getByRole('region', { name: '移动端联系方式', exact: true });
+      await mobileContacts.getByRole('button', { name: '复制微信号', exact: true }).click();
+      assert.equal(await page.evaluate(() => navigator.clipboard.readText()), 'Quenching_raw');
+      await assertFitsViewport(page);
+      await page.keyboard.press('Escape');
+      assert.equal(await mobileContacts.isVisible(), false);
+    }
   });
 });

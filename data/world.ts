@@ -20,7 +20,7 @@ export type WorldCollection = {
 // Keep kind: 'illustration' until an image actually documents your experience.
 export const worldCollections: WorldCollection[] = [
   {
-    id: 'digital', eyebrow: '01 / DIGITAL', title: '数字',
+    id: 'digital', eyebrow: '01 / DIGITAL', title: 'Digital World',
     description: '算法、终端与轨道插画。',
     cards: [
       { id: 'steps', title: '算法', caption: '方格纸上的排序示意。', image: '/images/world/algorithm.svg', alt: '橄榄绿方格纸上的柱状序列与排序箭头插画', kind: 'illustration', rotation: -4 },
@@ -29,7 +29,7 @@ export const worldCollections: WorldCollection[] = [
     ],
   },
   {
-    id: 'physical', eyebrow: '02 / EVERYDAY', title: '日常',
+    id: 'physical', eyebrow: '02 / EVERYDAY', title: 'Physical World',
     description: '书本、窗台与风景插画。',
     cards: [
       { id: 'pages', title: '阅读', caption: '书本与橄榄叶。', image: '/images/world/pages.svg', alt: '木色背景上的书本与一片橄榄叶插画', kind: 'illustration', rotation: 3 },

@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   },
 };
 
-const themeScript = `(function(){try{var t=localStorage.getItem('sethli-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.dataset.theme='dark'}}catch(e){}})()`;
+const themeScript = `(function(){try{document.documentElement.dataset.theme=localStorage.getItem('sethli-theme')==='light'?'light':'dark'}catch(e){}})()`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="zh-CN" className={`${brandFont.variable} ${codeFont.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head><body><SiteSearchProvider posts={getPostSummaries()}><a className="skip-link" href="#main">跳到主要内容</a><Header /><main id="main" className="site-main">{children}</main><Footer /></SiteSearchProvider></body></html>;
+  return <html lang="zh-CN" className={`${brandFont.variable} ${codeFont.variable}`} data-theme="dark" data-scroll-behavior="smooth" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head><body><SiteSearchProvider posts={getPostSummaries()}><a className="skip-link" href="#main">跳到主要内容</a><Header /><main id="main" className="site-main">{children}</main><Footer /></SiteSearchProvider></body></html>;
 }

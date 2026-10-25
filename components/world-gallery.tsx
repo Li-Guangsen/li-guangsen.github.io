@@ -26,7 +26,7 @@ function ScrapbookCard({ card, constraints, reset, open, compact }: { card: Worl
   }
 
   return <motion.article className={styles.scrapCard} style={{ x, y, rotate: compact || reduced ? 0 : card.rotation, zIndex: moving ? 5 : 1 }} drag={!compact && !reduced} dragControls={controls} dragListener={false} dragConstraints={constraints} dragElastic={0.08} dragMomentum={false} onDragStart={() => setMoving(true)} onDragEnd={() => setMoving(false)} whileHover={!reduced && !compact ? { rotate: 0 } : undefined} transition={{ type: 'tween', duration: .18, ease: [.2, .8, .2, 1] }}>
-    <div className={styles.cardTopline}><span>{card.kind === 'illustration' ? '原创插画 · 展示用' : '生活记录'}</span><button type="button" className={styles.dragHandle} aria-label={`移动“${card.title}”，方向键移动，Home 复位`} aria-describedby="gallery-instructions" onKeyDown={moveWithKeys} onPointerDown={(event) => { if (!compact && !reduced) controls.start(event); }} disabled={compact || Boolean(reduced)} title="拖动，或用方向键移动">⠿</button></div>
+    <div className={styles.cardTopline}><span>{card.kind === 'illustration' ? '展示插画' : '生活记录'}</span><button type="button" className={styles.dragHandle} aria-label={`移动“${card.title}”，方向键移动，Home 复位`} aria-describedby="gallery-instructions" onKeyDown={moveWithKeys} onPointerDown={(event) => { if (!compact && !reduced) controls.start(event); }} disabled={compact || Boolean(reduced)} title="拖动，或用方向键移动">⠿</button></div>
     <button type="button" className={styles.cardImageButton} onClick={() => open(card.id)} aria-label={`放大查看：${card.title}`}>
       <img src={card.image} width="800" height="560" alt={card.alt} loading="lazy" draggable="false" />
       <span className={styles.expandHint} aria-hidden="true">↗</span>
@@ -39,7 +39,7 @@ function Collection({ collection, open, compact }: { collection: WorldCollection
   const areaRef = useRef<HTMLDivElement>(null);
   const [reset, setReset] = useState(0);
   return <section className={styles.gallerySection} aria-labelledby={`collection-${collection.id}`}>
-    <div className={styles.galleryHeading}><div><span className="eyebrow">{collection.eyebrow}</span><h2 id={`collection-${collection.id}`}>{collection.title}<span>.</span></h2><p>{collection.description}</p></div><button type="button" className={styles.resetButton} onClick={() => setReset((value) => value + 1)} aria-label={`重新摆好${collection.title}的卡片`}>↺ 重新摆好</button></div>
+    <div className={styles.galleryHeading}><h2 id={`collection-${collection.id}`}>{collection.title}</h2><button type="button" className={styles.resetButton} onClick={() => setReset((value) => value + 1)} aria-label={`重新摆好${collection.title}的卡片`}>↺ 复位</button></div>
     <div className={styles.scrapbook} ref={areaRef}>{collection.cards.map((card) => <ScrapbookCard key={card.id} card={card} constraints={areaRef} reset={reset} open={open} compact={compact} />)}</div>
   </section>;
 }
@@ -71,7 +71,7 @@ export function WorldGallery() {
 
   function change(direction: number) { setSelected(allCards[(current + direction + allCards.length) % allCards.length].id); }
   return <>
-    <p className={styles.galleryInstructions} id="gallery-instructions"><span aria-hidden="true">＋</span> {compact ? '轻触图片放大，左右切换慢慢看。' : '拖动卡片右上角，把它们摆成喜欢的样子；点击图片放大。'}<span className="sr-only">移动按钮支持方向键和 Home 复位；放大后按左右方向键切换，Escape 关闭。</span></p>
+    <p className={styles.galleryInstructions} id="gallery-instructions">{compact ? '轻触图片放大。' : '拖动右上角移动卡片，点击图片放大。'}<span className="sr-only">移动按钮支持方向键和 Home 复位；放大后按左右方向键切换，Escape 关闭。</span></p>
     {worldCollections.map((collection) => <Collection key={collection.id} collection={collection} compact={compact} open={setSelected} />)}
     <dialog ref={dialogRef} className={styles.lightbox} aria-labelledby="lightbox-title" aria-describedby="lightbox-caption" onClose={() => setSelected(null)} onClick={(event) => { if (event.target === event.currentTarget) setSelected(null); }} onKeyDown={(event) => {
       if (event.key === 'ArrowLeft') { event.preventDefault(); change(-1); }

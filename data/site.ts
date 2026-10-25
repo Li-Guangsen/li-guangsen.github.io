@@ -16,7 +16,7 @@ export const site = {
   wechat: 'Quenching_raw',
   email: 'liguangsen60@qq.com',
   location: '',
-  // Logo A is the default avatar. A personal photo can replace it later.
+  // Brand artwork for project cards. The homepage uses the local GitHub avatar snapshot.
   avatar: '/brand/avatar-512.png',
   interests: ['后端开发', 'AI Agent'],
   // Example: { title: '学校或公司', description: '专业或职位', period: '2024 — 2026' }

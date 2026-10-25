@@ -11,7 +11,7 @@ const cells = Array.from({ length: weeks * 7 }, (_, index) => days[index - offse
 const monthMarkers = days.flatMap((day, index) => {
   const column = Math.floor((index + offset) / 7);
   if ((index !== 0 && !day.date.endsWith('-01')) || column > weeks - 3) return [];
-  return [{ column, date: day.date, label: `${Number(day.date.slice(5, 7))}月` }];
+  return [{ column, date: day.date, label: new Date(`${day.date}T00:00:00Z`).toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' }) }];
 });
 const months = monthMarkers.filter((month, index) => index !== 0 || !monthMarkers[1] || monthMarkers[1].column - month.column >= 3);
 function dayLabel(index: number) {
@@ -24,7 +24,15 @@ export function GitHubActivity() {
   const [detail, setDetail] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const dayRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  useEffect(() => { const el = scrollRef.current; if (el) el.scrollLeft = el.scrollWidth; }, []);
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (!element) return;
+    const showLatest = () => { element.scrollLeft = element.scrollWidth; };
+    showLatest();
+    const observer = new ResizeObserver(showLatest);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   function navigate(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     if (event.key === 'Escape') { setDetail(null); return; }
@@ -37,7 +45,7 @@ export function GitHubActivity() {
 
   return <section className={styles.activity} aria-labelledby="activity-heading">
     <div className={styles.activityHeading}>
-      <h3 id="activity-heading"><a href={`https://github.com/${activity.username}`} target="_blank" rel="noreferrer" title="查看 GitHub 贡献日历；统计范围遵循 GitHub 的贡献隐私设置">GitHub Activity</a></h3>
+      <h2 id="activity-heading"><a href={`https://github.com/${activity.username}`} target="_blank" rel="noreferrer" title="查看 GitHub 贡献日历；统计范围遵循 GitHub 的贡献隐私设置">GitHub Activity</a></h2>
       <time dateTime={activity.updatedAt} title={`贡献数据更新于 ${activity.updatedAt.slice(0, 10)}；每天自动同步`}>{activity.updatedAt.slice(0, 10).replaceAll('-', '.')}</time>
     </div>
       <p id="activity-instructions" className="sr-only">与 GitHub 对外可见的贡献日历同步，包含账号选择展示的私有贡献匿名统计。按方向键切换日期，Home 和 End 跳到本周起止日期。也可以点击或轻触方格查看贡献次数。</p>

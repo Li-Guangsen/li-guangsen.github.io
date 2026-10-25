@@ -16,31 +16,27 @@ function savedTheme() {
 }
 
 export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(true);
   const revision = useRef(0);
   const targetTheme = useRef<'light' | 'dark' | null>(null);
   const activeTransition = useRef<ViewTransition | null>(null);
   const activeReveal = useRef<Animation | null>(null);
 
   useEffect(() => {
-    const preference = window.matchMedia('(prefers-color-scheme: dark)');
     const sync = () => {
       revision.current += 1;
       activeReveal.current?.cancel();
       activeTransition.current?.skipTransition();
       document.documentElement.classList.remove(styles.transitionRoot);
-      const theme = savedTheme() ?? (preference.matches ? 'dark' : 'light');
+      const theme = savedTheme() ?? 'dark';
       targetTheme.current = theme;
       document.documentElement.dataset.theme = theme;
       setDark(theme === 'dark');
     };
-    const followSystem = () => { if (!savedTheme()) sync(); };
     const followStorage = (event: StorageEvent) => { if (event.key === storageKey || event.key === null) sync(); };
     sync();
-    preference.addEventListener('change', followSystem);
     window.addEventListener('storage', followStorage);
     return () => {
-      preference.removeEventListener('change', followSystem);
       window.removeEventListener('storage', followStorage);
       revision.current += 1;
       activeReveal.current?.cancel();

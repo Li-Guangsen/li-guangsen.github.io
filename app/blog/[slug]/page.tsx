@@ -54,23 +54,22 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
     <Link className={styles.backLink} href="/blog/">← 返回全部笔记</Link>
     <header className={styles.articleHeader}>
-      <div className={styles.headerCategories}><span className="eyebrow">FIELD NOTES / </span>{post.categories.map((category) => <Link key={category} href={`/blog/?category=${encodeURIComponent(category)}`}>{category}</Link>)}</div>
+      <div className={styles.headerCategories}>{post.categories.map((category) => <Link key={category} href={`/blog/?category=${encodeURIComponent(category)}`}>{category}</Link>)}</div>
       <h1>{post.title}</h1><p>{post.description}</p>
       <div className={styles.articleMeta}><time dateTime={post.date}>{formatDate(post.date)}</time><span aria-hidden="true">·</span><span>约 {post.minutes} 分钟阅读</span>{post.pinned && <span className={styles.pinned}>置顶笔记</span>}{post.sample && <span className="sample-label">示例文章</span>}</div>
     </header>
     <div className={styles.articleGrid}>
       <aside className={styles.relatedRail} aria-label="同类笔记">
-        <span className={styles.railLabel}>IN THE MARGIN</span><h2 className={styles.railTitle}>{categoryPosts.length > 1 ? '同一条思路' : '继续翻阅'}</h2>
+        <h2 className={styles.railTitle}>相关文章</h2>
         <ol className={styles.relatedList}>{related.map((item) => <li key={item.slug}><Link href={`/blog/${item.slug}/`} aria-current={item.slug === slug ? 'page' : undefined}>{item.title}<time dateTime={item.date}>{formatDate(item.date)}</time></Link></li>)}</ol>
         <Link className={styles.railAll} href="/blog/">全部笔记 →</Link>
       </aside>
       <ArticleToc key={post.slug} articleId={articleId} slug={post.slug} enabled={post.toc} />
       <article className={styles.articleBody} aria-label={post.title}>
-        {post.sample && <aside className={styles.sampleNotice}>这是一篇展示写作与阅读功能的示例，内容不代表个人真实经历。可以保留为写作参考，也可以替换成自己的笔记。</aside>}
+        {post.sample && <aside className={styles.sampleNotice}>写作示例，非个人经历。</aside>}
         <div id={articleId} className={`prose ${styles.articleContent}`}><MDXContent code={post.content} /></div>
         <footer className={styles.articleFooter}>
           <div className={styles.articleTags}>{post.tags.map((tag) => <Link href={`/blog/?tag=${encodeURIComponent(tag)}`} key={tag}># {tag}</Link>)}</div>
-          <p className={styles.readingEnd}>END OF NOTE / 把过程留在这里</p>
           <nav className={styles.postNavigation} aria-label="相邻文章">
             {newer && <Link href={`/blog/${newer.slug}/`}><span>← 较新的笔记</span><strong>{newer.title}</strong></Link>}
             {older && <Link href={`/blog/${older.slug}/`}><span>较早的笔记 →</span><strong>{older.title}</strong></Link>}

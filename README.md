@@ -11,13 +11,13 @@
 
 ## 功能
 
-- 紧凑的个人首页，展示教育经历、带图标的技术栈与项目。
-- GitHub 名片、真实头像、仓库统计与年度贡献日历合为一张卡片，公开仓库区分本人创建与 Fork。
-- 页脚提供 GitHub、微信号查看与复制、邮箱联系入口。
+- 居中头像与简介、单栏贡献日历、教育经历和技术栈；布局参考 neuromancer.club。
+- Projects 独立展示项目卡片、GitHub 资料与仓库，区分本人创建与 Fork。
+- Contact 菜单与页脚提供 GitHub、微信号复制、邮箱联系入口。
 - Markdown / MDX 写作，支持分类、标签、置顶、分页和全站快捷搜索。
 - 文章目录、阅读进度、关联文章、代码高亮与复制、KaTeX 公式、Mermaid 图表及 React 交互组件。
 - 可拖动的“拾光”收藏与图片预览。
-- 深浅主题、可连续操作的日月切换、响应式布局和键盘操作；尊重减少动态效果偏好。
+- 默认深色主题，记住手动切换的选择；支持响应式布局、键盘操作与减少动态效果偏好。
 - GitHub Actions 自动检查和发布，每日刷新公开 GitHub 数据。不接入评论系统。
 
 ## 本地开发
@@ -55,7 +55,8 @@ npm run dev
 | `data/world.ts` | 兴趣收藏的分组、说明与图片 |
 | `content/posts/` | Markdown / MDX 文章 |
 | `components/profile-details.tsx` | 教育与技术栈展示 |
-| `components/github-profile.tsx` | GitHub 组合卡片 |
+| `components/github-profile.tsx` | 项目页的 GitHub 资料与仓库统计 |
+| `components/github-activity.tsx` | 首页贡献日历 |
 | `components/theme-toggle.tsx` | 主题切换与动画 |
 | `public/brand/` | A/B 品牌资产、头像和分享图 |
 | `public/icons/` | 本地托管的技术及社交图标 |
@@ -110,6 +111,6 @@ git push
 
 ## 实现与素材
 
-功能组织参考 [neuromancer.club](https://neuromancer.club/)，页面、文案和素材采用本站风格。自有品牌资产、技术图标、校徽与官方社交图标来源见 [素材记录](docs/ASSETS.md) 及对应资源目录中的说明。
+页面结构与视觉布局参考 [neuromancer.club](https://neuromancer.club/)：窄版个人首页、中性深浅色、网格背景、项目卡片、标签文章列表与拍立得相册。沿用本站组件独立实现，展示本站资料与内容。品牌资产、技术图标、校徽与社交图标来源见 [素材记录](docs/ASSETS.md) 及对应资源目录中的说明。
 
 自托管字体附来源与许可证。依赖、构建产物、环境变量和私钥均不加入源码仓库。

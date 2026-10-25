@@ -6,5 +6,5 @@ export const metadata = pageMetadata('博客', '算法、开发与学习笔记�
 
 export default function BlogPage() {
   const posts = getPostSummaries();
-  return <div className="inner-page blog-page"><div className="page-heading"><h1>博客<span>.</span></h1><p>算法、开发与学习笔记。</p></div><BlogExplorer posts={posts} /></div>;
+  return <div className="inner-page blog-page textured-page"><div className="page-heading"><h1>Blog</h1><p>算法、开发与学习笔记。</p></div><BlogExplorer posts={posts} /></div>;
 }
