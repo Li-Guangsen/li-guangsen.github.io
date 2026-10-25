@@ -1,5 +1,6 @@
 .avatarSpark { border: 0; padding: 0; background: transparent; color: inherit; cursor: pointer; transition: transform 180ms ease; }
 .avatarSpark:hover { transform: scale(1.04); }
+.avatarSpark:active { transform: scale(.97); }
 .galleryInstructions { color: var(--muted); font-size: 12px; margin-top: -24px; margin-bottom: 40px; }
 .galleryInstructions > span:first-child { display: none; }
 .gallerySection { margin-top: 48px; border: 1px solid var(--line); border-radius: 24px; background: var(--gallery-bg, var(--chip-bg)); overflow: hidden; }
@@ -10,6 +11,8 @@
 .resetButton:hover { background: var(--accent-soft); color: var(--ink); }
 .scrapbook { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); align-items: start; gap: 64px 80px; padding: 32px 64px 64px; position: relative; }
 .scrapCard { width: 100%; max-width: 390px; min-width: 0; justify-self: center; position: relative; padding: 16px 16px 20px; background: var(--surface); border-radius: 6px; box-shadow: 0 16px 32px #0002; }
+.cardGlare { position: absolute; inset: 0; pointer-events: none; border-radius: inherit; background: linear-gradient(120deg, #fff1, transparent 60%); opacity: 0; transition: opacity 220ms ease; }
+.scrapCard:hover .cardGlare { opacity: 1; }
 :global([data-theme='dark']) .scrapCard { background: #262626; }
 .scrapCard:last-child:nth-child(odd) { grid-column: 1 / -1; width: 50%; margin-top: -32px; }
 .cardTopline { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: -4px 0 8px; color: var(--muted); font-size: 10px; }
@@ -29,6 +32,8 @@
 .lightboxTopline { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; color: var(--muted); font-size: 12px; }
 .lightboxClose { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--accent-soft); color: var(--ink); font-size: 23px; }
 .lightboxContent > img { display: block; width: 100%; max-height: 65dvh; height: auto; object-fit: contain; border-radius: 4px; }
+.lightbox[open] .lightboxContent > img { animation: image-arrive 180ms ease-out; }
+@keyframes image-arrive { from { opacity: .35; } to { opacity: 1; } }
 .lightboxFooter { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 20px; }
 .lightboxFooter h2 { font-size: 22px; line-height: 30px; font-weight: 600; }
 .lightboxFooter p { margin-top: 6px; font-size: 13px; color: var(--muted); }
@@ -52,4 +57,4 @@
   .galleryHeading h2 { font-size: 18px; }
   .resetButton { font-size: 11px; padding: 6px; }
 }
-@media (prefers-reduced-motion: reduce) { .scrapCard, .avatarSpark { transform: none !important; } }
+@media (prefers-reduced-motion: reduce) { .scrapCard, .avatarSpark { transform: none !important; } .cardGlare { display: none; } }

@@ -13,11 +13,12 @@
 
 - 居中头像与简介、单栏贡献日历、教育经历和技术栈；布局参考 neuromancer.club。
 - 项目页独立展示项目卡片、GitHub 资料与仓库，区分本人创建与 Fork。
-- Contact 菜单与页脚提供 GitHub、微信号复制、邮箱联系入口。
+- 全站搜索入口支持 Ctrl / ⌘ K；Contact 菜单与页脚提供 GitHub、微信号复制、邮箱联系入口。
 - Markdown / MDX 写作，支持分类、标签、置顶、分页和全站快捷搜索。
 - 文章目录、阅读进度、关联文章、代码高亮与复制、KaTeX 公式、Mermaid 图表及 React 交互组件。
 - 可拖动的“拾光”收藏与图片预览。
 - 默认深色主题，记住手动切换的选择；支持响应式布局、键盘操作与减少动态效果偏好。
+- 动效参考 [Neuromancer 源码](https://github.com/Iamnotphage/iamnotphage.github.io)：滚动浮动导航、滑动高亮、卡片跟随光效、相册倾斜与弹层开合。正文与链接位置保持稳定，触屏和减少动态效果模式自动简化。
 - GitHub Actions 自动检查和发布，每日刷新公开 GitHub 数据。不接入评论系统。
 
 ## 本地开发

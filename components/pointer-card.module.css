@@ -1,0 +1,4 @@
+.surface { position: relative; isolation: isolate; overflow: hidden; }
+.glow { position: absolute; top: 0; left: 0; z-index: -1; width: 440px; height: 440px; margin: -220px; pointer-events: none; border-radius: 50%; background: radial-gradient(circle at 35% 40%, #22c55e20, #14b8a610 36%, transparent 68%); }
+:global([data-theme='dark']) .glow { background: radial-gradient(circle at 35% 40%, #22c55e30, #14b8a618 36%, transparent 68%); }
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) { .glow { display: none; } }

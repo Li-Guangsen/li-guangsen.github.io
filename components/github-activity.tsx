@@ -16,7 +16,7 @@ const monthMarkers = days.flatMap((day, index) => {
 const months = monthMarkers.filter((month, index) => index !== 0 || !monthMarkers[1] || monthMarkers[1].column - month.column >= 3);
 function dayLabel(index: number) {
   const day = days[index];
-  return `${day.date} · ${day.count} 次贡献`;
+  return `${day.date} · ${day.count} ${day.count === 1 ? 'contribution' : 'contributions'}`;
 }
 
 export function GitHubActivity() {
@@ -43,16 +43,16 @@ export function GitHubActivity() {
     dayRefs.current[Math.max(0, Math.min(days.length - 1, targets[event.key]))]?.focus();
   }
 
-  return <section className={styles.activity} aria-labelledby="activity-heading">
+  return <section className={styles.activity} aria-labelledby="activity-heading" lang="en">
     <div className={styles.activityHeading}>
-      <h2 id="activity-heading"><a href={`https://github.com/${activity.username}`} target="_blank" rel="noreferrer" title="查看 GitHub 贡献日历；统计范围遵循 GitHub 的贡献隐私设置">GitHub Activity</a></h2>
-      <time dateTime={activity.updatedAt} title={`贡献数据更新于 ${activity.updatedAt.slice(0, 10)}；每天自动同步`}>{activity.updatedAt.slice(0, 10).replaceAll('-', '.')}</time>
+      <h2 id="activity-heading"><a href={`https://github.com/${activity.username}`} target="_blank" rel="noreferrer" title="View contribution activity on GitHub">GitHub Activity</a></h2>
+      <time dateTime={activity.updatedAt} title={`Updated ${activity.updatedAt.slice(0, 10)} · Synced daily`}>{activity.updatedAt.slice(0, 10).replaceAll('-', '.')}</time>
     </div>
-      <p id="activity-instructions" className="sr-only">与 GitHub 对外可见的贡献日历同步，包含账号选择展示的私有贡献匿名统计。按方向键切换日期，Home 和 End 跳到本周起止日期。也可以点击或轻触方格查看贡献次数。</p>
+      <p id="activity-instructions" className="sr-only">Synced with GitHub, including anonymous private contributions enabled on the profile. Use arrow keys to explore dates, Home and End to move within a week, or tap a square for details.</p>
       <div className={styles.activityScroll} ref={scrollRef}>
         <div className={styles.activityChart} style={{ '--weeks': weeks } as CSSProperties}>
           <div className={styles.activityMonths} aria-hidden="true">{months.map((month) => <span key={month.date} style={{ gridColumn: `${month.column + 1} / span 3` }}>{month.label}</span>)}</div>
-          <div role="group" aria-label={`过去一年 ${activity.total} 次 GitHub 贡献`} aria-describedby="activity-instructions" className={styles.activityGrid} onPointerLeave={() => setDetail(null)} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setDetail(null); }}>
+          <div role="group" aria-label={`${activity.total} contributions in the last year`} aria-describedby="activity-instructions" className={styles.activityGrid} onPointerLeave={() => setDetail(null)} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setDetail(null); }}>
             {cells.map((day, cellIndex) => {
               if (!day) return <span key={`empty-${cellIndex}`} aria-hidden="true" />;
               const index = cellIndex - offset;
@@ -62,8 +62,8 @@ export function GitHubActivity() {
         </div>
       </div>
       <div className={styles.activityFooter}>
-        <p className={styles.activityDetail} aria-live="polite">{detail === null ? <>过去一年 <strong>{activity.total}</strong> 次贡献</> : dayLabel(detail)}</p>
-        <div className={styles.activityLegend} aria-label="颜色从浅到深表示贡献从少到多"><span>少</span>{[0, 1, 2, 3, 4].map((level) => <i key={level} data-level={level} aria-hidden="true" />)}<span>多</span></div>
+        <p className={styles.activityDetail} aria-live="polite">{detail === null ? <><strong>{activity.total}</strong> contributions in the last year</> : dayLabel(detail)}</p>
+        <div className={styles.activityLegend} aria-label="Contribution intensity from less to more"><span>Less</span>{[0, 1, 2, 3, 4].map((level) => <i key={level} data-level={level} aria-hidden="true" />)}<span>More</span></div>
       </div>
   </section>;
 }

@@ -16,9 +16,10 @@ export function AvatarSpark({ children, className = '', label = '撒点纸屑' }
     try {
       const { default: confetti } = await import('canvas-confetti');
       void confetti({
-        particleCount: 40, spread: 65, startVelocity: 22, gravity: 0.9,
+        particleCount: 56, spread: 360, startVelocity: 20, gravity: 0.25, ticks: 90, decay: .93,
+        shapes: ['star', 'circle'], scalar: .9,
         origin: { x: (bounds.left + bounds.width / 2) / window.innerWidth, y: (bounds.top + bounds.height / 2) / window.innerHeight },
-        colors: ['#50764d', '#b6c99d', '#d7c8a5', '#d9e3cf'],
+        colors: ['#4ade80', '#86efac', '#facc15', '#fef08a'],
         disableForReducedMotion: true, zIndex: 100,
       });
     } catch {

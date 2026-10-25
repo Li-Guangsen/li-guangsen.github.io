@@ -9,9 +9,9 @@ export function GitHubProfile() {
       <span><strong>{githubProfile.name || githubProfile.login}</strong><span>@{githubProfile.login}</span></span><span aria-hidden="true">↗</span>
     </a>
     <dl className={styles.stats}>
-      <div><dt>公开仓库</dt><dd>{githubProfile.publicRepos}</dd></div>
-      <div><dt>本人创建</dt><dd>{ownRepositories.length}</dd></div>
-      <div><dt>Fork</dt><dd>{forkedRepositories.length}</dd></div>
+      <div><dt>Public repos</dt><dd>{githubProfile.publicRepos}</dd></div>
+      <div><dt>Original</dt><dd>{ownRepositories.length}</dd></div>
+      <div><dt>Forks</dt><dd>{forkedRepositories.length}</dd></div>
     </dl>
   </div>;
 }

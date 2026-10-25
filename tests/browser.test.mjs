@@ -93,6 +93,8 @@ test('keyboard search opens an article and Escape releases the filled search dia
     await page.keyboard.press('Enter');
     await page.waitForURL('**/blog/binary-search-field-notes/');
     await page.getByRole('heading', { level: 1 }).waitFor();
+    assert.equal(await page.locator('.site-search-dialog').evaluate(dialog => dialog.open), false, 'Navigation releases the native modal immediately');
+    await search.waitFor({ state: 'hidden' });
     assert.equal(await search.isVisible(), false);
 
     const previousOverflow = await page.evaluate(() => document.body.style.overflow);
@@ -325,25 +327,25 @@ test('contribution calendar preserves every GitHub date, count and intensity and
   await journey({ viewport: { width: 1440, height: 1000 } }, async (page) => {
     await page.goto('/');
     const calendar = page.getByRole('region', { name: 'GitHub Activity', exact: true });
-    const graph = calendar.getByRole('group', { name: `过去一年 ${activitySnapshot.total} 次 GitHub 贡献`, exact: true });
+    const graph = calendar.getByRole('group', { name: `${activitySnapshot.total} contributions in the last year`, exact: true });
     const renderedDays = await graph.locator('button[data-date]').evaluateAll((elements) => elements.map((element) => ({
       date: element.getAttribute('data-date'),
-      count: Number(element.getAttribute('aria-label').match(/ · (\d+) 次贡献$/)[1]),
+      count: Number(element.getAttribute('aria-label').match(/ · (\d+) contributions?$/)[1]),
       level: Number(element.getAttribute('data-level')),
     })));
     assert.deepEqual(renderedDays, activitySnapshot.days, 'All activity, including anonymous private counts chosen for display, must survive rendering');
     assert.equal(renderedDays.reduce((total, day) => total + day.count, 0), activitySnapshot.total);
     assert.equal(await calendar.getByRole('link', { name: 'GitHub Activity', exact: true }).getAttribute('href'), `https://github.com/${activitySnapshot.username}`);
     const details = calendar.locator('[aria-live="polite"]');
-    assert.match(await details.innerText(), new RegExp(`过去一年\\s+${activitySnapshot.total}\\s+次贡献`));
+    assert.match(await details.innerText(), new RegExp(`${activitySnapshot.total}\\s+contributions in the last year`));
     const activeDay = activitySnapshot.days.find((day) => day.count > 0) ?? activitySnapshot.days[0];
     await graph.locator(`button[data-date="${activeDay.date}"]`).focus();
-    assert.equal(await details.innerText(), `${activeDay.date} · ${activeDay.count} 次贡献`);
+    assert.equal(await details.innerText(), `${activeDay.date} · ${activeDay.count} ${activeDay.count === 1 ? 'contribution' : 'contributions'}`);
     await page.keyboard.press('ArrowRight');
     const nextDay = activitySnapshot.days[Math.min(activitySnapshot.days.length - 1, activitySnapshot.days.indexOf(activeDay) + 7)];
-    assert.equal(await details.innerText(), `${nextDay.date} · ${nextDay.count} 次贡献`);
+    assert.equal(await details.innerText(), `${nextDay.date} · ${nextDay.count} ${nextDay.count === 1 ? 'contribution' : 'contributions'}`);
     await page.keyboard.press('Escape');
-    assert.match(await details.innerText(), new RegExp(`过去一年\\s+${activitySnapshot.total}\\s+次贡献`));
+    assert.match(await details.innerText(), new RegExp(`${activitySnapshot.total}\\s+contributions in the last year`));
   });
 });
 
@@ -365,7 +367,7 @@ test('domain-independent branding and GitHub repository provenance are present w
     const repositories = page.locator('#github-collection');
     await repositories.getByRole('heading', { name: 'GitHub', exact: true }).waitFor();
     const groups = repositories.locator('h3');
-    assert.match(await groups.nth(0).innerText(), /本人创建/);
+    assert.match(await groups.nth(0).innerText(), /Original/);
     assert.match(await groups.nth(1).innerText(), /Fork/);
     assert.equal(await repositories.locator('h4 a').count(), githubSnapshot.repositories.length);
     for (const repository of githubSnapshot.repositories) {
@@ -399,7 +401,7 @@ test('reference layout and Contact work on desktop and narrow mobile screens', {
     const contact = page.getByRole('region', { name: '联系方式', exact: true });
     await contact.getByRole('button', { name: '复制微信号', exact: true }).click();
     assert.equal(await page.evaluate(() => navigator.clipboard.readText()), 'Quenching_raw');
-    assert.equal(await contact.getByRole('link', { name: /邮箱/ }).getAttribute('href'), 'mailto:liguangsen60@qq.com');
+    assert.equal(await contact.getByRole('link', { name: /Email/ }).getAttribute('href'), 'mailto:liguangsen60@qq.com');
     await page.keyboard.press('Escape');
     assert.equal(await contact.isVisible(), false);
     assert.equal(await opener.evaluate(el => el === document.activeElement), true);
@@ -421,5 +423,92 @@ test('reference layout and Contact work on desktop and narrow mobile screens', {
       await page.keyboard.press('Escape');
       assert.equal(await mobileContacts.isVisible(), false);
     }
+  });
+});
+
+test('visible search works on every main route and restores focus on desktop and touch screens', { timeout: 60_000 }, async () => {
+  for (const mobile of [false, true]) {
+    await journey({ viewport: { width: mobile ? 320 : 1440, height: 900 }, isMobile: mobile, hasTouch: mobile, reducedMotion: 'no-preference' }, async (page) => {
+      for (const route of ['/', '/projects/', '/blog/', '/the-world/']) {
+        await page.goto(route);
+        const opener = page.getByRole('button', { name: '搜索文章（Ctrl 或 Command K）', exact: true });
+        await opener.click();
+        const dialog = page.getByRole('dialog', { name: '搜索文章', exact: true });
+        await dialog.waitFor({ state: 'visible' });
+        const input = dialog.getByRole('combobox');
+        await input.fill('二分 Python');
+        assert.ok(await dialog.getByRole('option').count() > 0);
+        await page.keyboard.press('Escape');
+        await dialog.waitFor({ state: 'hidden' });
+        assert.equal(await opener.evaluate(element => document.activeElement === element), true);
+        assert.notEqual(await page.evaluate(() => document.body.style.overflow), 'hidden');
+        await assertFitsViewport(page);
+      }
+      await page.getByRole('button', { name: '搜索文章（Ctrl 或 Command K）', exact: true }).click();
+      const input = page.getByRole('combobox', { name: '搜索关键词' });
+      await input.fill('no-matching-article-82931');
+      await page.keyboard.press('ArrowDown');
+      await page.keyboard.press('Enter');
+      assert.equal(await input.getAttribute('aria-activedescendant'), null);
+      await input.fill('二分 Python');
+      await page.keyboard.press('Enter');
+      await page.waitForURL('**/blog/binary-search-field-notes/');
+      await page.getByRole('dialog', { name: '搜索文章', exact: true }).waitFor({ state: 'hidden' });
+    });
+  }
+});
+
+test('floating navigation and pointer effects settle, preserve hit targets and respect reduced motion', { timeout: 60_000 }, async () => {
+  await journey({ viewport: { width: 1440, height: 960 }, reducedMotion: 'no-preference' }, async (page) => {
+    await page.goto('/');
+    await page.getByText('后端开发学习中，偶尔玩前端，分享知识', { exact: true }).waitFor();
+    const full = await page.locator('.header-inner').boundingBox();
+    await page.evaluate(() => window.scrollTo({ top: 160, behavior: 'instant' }));
+    await page.waitForFunction(() => document.querySelector('.site-header')?.classList.contains('is-floating'));
+    await page.waitForFunction(() => document.querySelector('.header-inner').getBoundingClientRect().width === 960);
+    const compact = await page.locator('.header-inner').boundingBox();
+    assert.ok(compact.width < full.width);
+    assert.ok(Math.abs(compact.height - full.height) < .05, 'Floating must preserve the header height, allowing only subpixel rounding');
+    assert.equal(await page.evaluate(() => window.scrollY), 160);
+    for (const width of [1440, 1024]) {
+      await page.setViewportSize({ width, height: 960 });
+      const world = await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '拾光', exact: true }).boundingBox();
+      const search = await page.getByRole('button', { name: '搜索文章（Ctrl 或 Command K）', exact: true }).boundingBox();
+      assert.ok(world.x + world.width + 8 <= search.x, 'The dock must leave space for the global search control');
+    }
+    await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '项目', exact: true }).click();
+    await page.waitForURL('**/projects/');
+    const card = page.locator('.project-card').first();
+    await card.scrollIntoViewIfNeeded();
+    await page.mouse.move(0, 0);
+    const textBefore = await card.locator('.project-description').boundingBox();
+    await card.hover({ position: { x: 80, y: 110 } });
+    await page.waitForFunction(() => Number(getComputedStyle(document.querySelector('.project-card [data-pointer-glow]')).opacity) > .9);
+    const glow = card.locator('[data-pointer-glow]');
+    const firstPosition = await glow.evaluate(element => getComputedStyle(element).transform);
+    await card.hover({ position: { x: 160, y: 160 } });
+    await page.waitForFunction(previous => getComputedStyle(document.querySelector('.project-card [data-pointer-glow]')).transform !== previous, firstPosition);
+    assert.deepEqual(await card.locator('.project-description').boundingBox(), textBefore);
+    await page.mouse.move(0, 0);
+    await page.waitForFunction(() => Number(getComputedStyle(document.querySelector('.project-card [data-pointer-glow]')).opacity) < .01);
+    await page.goto('/the-world/');
+    const photo = page.getByRole('button', { name: /^放大查看：/ }).first();
+    await photo.click();
+    const lightbox = page.locator('.gallery-lightbox');
+    await lightbox.waitFor({ state: 'visible' });
+    const image = await lightbox.locator('img').getAttribute('src');
+    await lightbox.getByRole('button', { name: '关闭图片预览', exact: true }).click();
+    assert.equal(await lightbox.locator('img').getAttribute('src'), image, 'Closing must retain the photo through its exit animation');
+    await lightbox.waitFor({ state: 'hidden' });
+    await photo.click();
+    await lightbox.waitFor({ state: 'visible' });
+    await page.keyboard.press('Escape');
+    await lightbox.waitFor({ state: 'hidden' });
+    await page.goto('/projects/');
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await card.hover();
+    assert.equal(await glow.evaluate(element => getComputedStyle(element).display), 'none');
+    await page.goto('/the-world/');
+    assert.equal(await page.locator('[data-the-world-page] article').first().evaluate(element => getComputedStyle(element).transform), 'none');
   });
 });

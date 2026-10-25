@@ -33,8 +33,8 @@ export function ContactMenu({ inline = false }: { inline?: boolean }) {
     {(inline || open) && <div id={id} className="contact-panel" role="region" aria-label={inline ? '移动端联系方式' : '联系方式'}>
       {inline && <p className="contact-label">Contact</p>}
       <a href={site.github} target="_blank" rel="noopener noreferrer"><GitHubIcon /><span>GitHub</span><span className="contact-value">↗</span></a>
-      <button type="button" onClick={() => void copyWechat()} aria-label="复制微信号"><WeChatIcon /><span>微信</span><span className="contact-value">{site.wechat}</span></button>
-      <a href={`mailto:${site.email}`}><MailIcon /><span>邮箱</span><span className="contact-value">↗</span></a>
+      <button type="button" onClick={() => void copyWechat()} aria-label="复制微信号"><WeChatIcon /><span>WeChat</span><span className="contact-value">{site.wechat}</span></button>
+      <a href={`mailto:${site.email}`}><MailIcon /><span>Email</span><span className="contact-value">↗</span></a>
       {copyStatus && <p className="contact-status" role="status">{copyStatus}</p>}
     </div>}
   </div>;

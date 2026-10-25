@@ -13,7 +13,8 @@
 .educationCopy p { grid-column: 1 / -1; grid-row: 2; font-size: 14px; color: var(--muted); line-height: 21px; }
 .period { grid-column: 2; grid-row: 1; color: var(--muted); font-size: 12px; line-height: 21px; white-space: nowrap; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
-.chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; min-height: 36px; border: 1px solid var(--line); border-radius: 12px; background: var(--chip-bg); color: var(--ink); font-size: 14px; line-height: 20px; white-space: nowrap; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; min-height: 36px; border: 1px solid var(--line); border-radius: 12px; background: var(--chip-bg); color: var(--ink); font-size: 14px; line-height: 20px; white-space: nowrap; transition: transform 180ms var(--ease-out), border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) { .chip:hover { transform: translateY(-2px); border-color: var(--muted); background: var(--accent-soft); box-shadow: 0 4px 12px #0001; } }
 .chip > :first-child { width: 18px; height: 18px; }
 .exploration { margin-top: 20px; }
 .explorationLabel { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: var(--muted); font-size: 12px; }

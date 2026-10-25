@@ -17,6 +17,7 @@ export function SearchTrigger({ onClick }: { onClick: () => void }) {
 
   return <button type="button" className={styles.trigger} aria-label="搜索文章（Ctrl 或 Command K）" aria-haspopup="dialog" aria-keyshortcuts={isMac ? 'Meta+K' : 'Control+K'} title={`搜索文章 · ${isMac ? 'Command' : 'Ctrl'} + K`} onClick={onClick}>
     <SearchIcon />
+    <span className={styles.label} lang="en">Search</span>
     <kbd className={styles.shortcut} aria-hidden="true">
       {isMac ? <CommandIcon /> : <span className={styles.modifier}>Ctrl</span>}
       <span className={styles.key}>K</span>

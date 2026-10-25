@@ -4,6 +4,7 @@ export const site = {
   name: 'sethli',
   displayName: '李广森',
   role: '山东科技大学 · 计算机科学与技术硕士在读',
+  bio: '后端开发学习中，偶尔玩前端，分享知识',
   // Displayed only in the footer copyright; it does not control hosting or branding.
   footerDomain: 'sethli.tech',
   // Public build-time URL; set NEXT_PUBLIC_SITE_URL when moving to a custom domain.

@@ -12,7 +12,7 @@ export default function Home() {
       </AvatarSpark>
       <h1 id="intro-heading">{site.name}</h1>
       <p className="profile-byline">{site.displayName} <span aria-hidden="true">·</span> <a href={site.github} target="_blank" rel="noopener noreferrer">@{githubProfile.login}</a></p>
-      <div className="profile-bio"><p>{site.role}</p><p>{site.interests.join(' · ')}</p></div>
+      <div className="profile-bio"><p>{site.role}</p><p>{site.bio}</p></div>
     </section>
     <GitHubActivity />
     {site.experience.length > 0 && <section className="experience-section" aria-labelledby="experience-heading">

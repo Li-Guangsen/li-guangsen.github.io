@@ -56,7 +56,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     <header className={styles.articleHeader}>
       <div className={styles.headerCategories}>{post.categories.map((category) => <Link key={category} href={`/blog/?category=${encodeURIComponent(category)}`}>{category}</Link>)}</div>
       <h1>{post.title}</h1><p>{post.description}</p>
-      <div className={styles.articleMeta}><time dateTime={post.date}>{formatDate(post.date)}</time><span aria-hidden="true">·</span><span>约 {post.minutes} 分钟阅读</span>{post.pinned && <span className={styles.pinned}>置顶笔记</span>}{post.sample && <span className="sample-label">示例文章</span>}</div>
+      <div className={styles.articleMeta}><time dateTime={post.date}>{formatDate(post.date)}</time><span aria-hidden="true">·</span><span lang="en">{post.minutes} min read</span>{post.pinned && <span className={styles.pinned}>置顶笔记</span>}{post.sample && <span className="sample-label">示例文章</span>}</div>
     </header>
     <div className={styles.articleGrid}>
       <aside className={styles.relatedRail} aria-label="同类笔记">

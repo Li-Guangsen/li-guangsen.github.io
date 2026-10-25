@@ -44,7 +44,7 @@ export function ProfileDetails({ education, skills, exploring = ['LangGraph', 'M
         {skills.map((skill) => <li className={styles.chip} key={skill}><TechIcon name={skill} /><span>{skill}</span></li>)}
       </ul>
       {exploring.length > 0 && <div className={styles.exploration}>
-        <p className={styles.explorationLabel}><span className={styles.explorationDot} /> 正在探索<span className={styles.explorationDirection}>Agent 方向</span></p>
+        <p className={styles.explorationLabel} lang="en"><span className={styles.explorationDot} /> Exploring<span className={styles.explorationDirection}>AI Agents</span></p>
         <ul className={`${styles.chips} ${styles.exploringChips}`} aria-label="正在探索的 Agent 技术">
           {exploring.map((skill) => <li className={styles.chip} key={skill}><TechIcon name={skill} /><span>{skill}</span></li>)}
         </ul>
