@@ -6,6 +6,7 @@ const icons: Record<string, string> = {
   c: 'c',
   springboot: 'springboot',
   spring: 'spring',
+  springai: 'spring',
   fastapi: 'fastapi',
   mysql: 'mysql',
   redis: 'redis',
@@ -16,6 +17,7 @@ const icons: Record<string, string> = {
   git: 'git',
   langgraph: 'langgraph-logo',
   mcp: 'mcp',
+  openaiagentssdk: 'openai',
 };
 
 /** Locally hosted source logos; the surrounding label supplies the accessible name. */

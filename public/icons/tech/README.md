@@ -9,6 +9,7 @@ website's foreground color in both themes.
   `java`, `python`, `redis`, `linux`, `docker`, `nextjs`, and `git` use
   the `plain` version; C, Spring and MySQL use `original`.
   The MIT license is preserved in `DEVICON-LICENSE`.
+  Spring AI uses the Spring leaf mark.
 - FastAPI: the [official `icon-white.svg`](https://github.com/fastapi/fastapi/blob/master/docs/en/docs/img/icon-white.svg).
   Its current diagonal lightning cutout is preserved as a compound path; only
   the empty canvas is cropped to align with the other 20px icons. The CSS mask
@@ -19,6 +20,10 @@ website's foreground color in both themes.
   theme color as the other technology badges.
 - MCP: [Simple Icons source](https://github.com/simple-icons/simple-icons/blob/develop/icons/modelcontextprotocol.svg).
   The Simple Icons license is preserved in `SIMPLE-ICONS-LICENSE`.
+- OpenAI Agents SDK: the blossom from the [official SDK documentation logo](https://github.com/openai/openai-agents-python/blob/main/docs/assets/logo.svg).
+  The path is unchanged; the viewBox crops only the surrounding empty canvas
+  so the mark aligns with the other icons. The repository's MIT license is
+  preserved in `OPENAI-AGENTS-LICENSE`.
 - RAG uses a generic document-search drawing in `components/tech-icons.tsx`;
   it is a technique, so no product logo is implied.
 

@@ -32,7 +32,8 @@ export const site = {
     { title: '山东科技大学', description: '计算机科学与技术学士', period: 'Sep 2021 – Jun 2025' },
   ],
   // Fill these only with technologies you want to list as your own skills.
-  skills: ['Java', 'Python', 'C', 'Spring Boot', 'FastAPI', 'MySQL', 'Redis', 'Linux', 'Docker', 'Next.js', 'Git'],
+  skills: ['Java', 'Python', 'C', 'Spring Boot', 'FastAPI', 'MySQL', 'Redis', 'Linux', 'Docker', 'Git'],
+  exploring: ['LangGraph', 'MCP', 'RAG', 'Spring AI', 'OpenAI Agents SDK'],
 };
 
 export type Project = {

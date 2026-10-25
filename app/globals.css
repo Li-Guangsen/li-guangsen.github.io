@@ -95,10 +95,10 @@ svg { flex-shrink: 0; }
 .hero { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .hero .profile-avatar { width: 112px; height: 112px; overflow: hidden; border: 2px solid var(--line); border-radius: 50%; background: var(--art); flex-shrink: 0; }
 .profile-avatar img { width: 100%; height: 100%; display: block; object-fit: cover; }
-.hero h1 { margin-top: 16px; font-size: 30px; line-height: 36px; font-weight: 700; letter-spacing: -.7px; }
+.hero h1 { margin-top: 24px; font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -.4px; }
 .hero h1 a { border-radius: 5px; transition: color 160ms ease; }
 .hero h1 a:hover { color: var(--accent); }
-.profile-bio { margin-top: 16px; color: var(--secondary); font-size: 14px; line-height: 23px; }
+.profile-bio { margin-top: 24px; color: var(--secondary); font-size: 14px; line-height: 24px; }
 .profile-bio p + p { margin-top: 8px; }
 .experience-section { margin-top: 36px; }
 .experience-section > h2 { font-size: 20px; line-height: 28px; font-weight: 600; }
@@ -111,7 +111,7 @@ svg { flex-shrink: 0; }
 .footer-inner { width: min(1120px, calc(100% - 32px)); margin-inline: auto; padding: 40px 0; }
 .footer-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 48px; }
 .footer-name { display: inline-flex; align-items: center; gap: 12px; }
-.footer-name img { border-radius: 50%; }
+.footer-name img { border-radius: 0; }
 .footer-name svg { width: 94px; height: 40px; }
 .footer-about > p { color: var(--muted); font-size: 12px; line-height: 17px; margin-top: 10px; }
 .footer-links { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; color: var(--muted); font-size: 14px; }

@@ -18,6 +18,6 @@ export default function Home() {
       <h2 id="experience-heading">Work Experience</h2>
       {site.experience.map((item) => <div className="experience-row" key={`${item.title}-${item.period}`}><div><h3>{item.title}</h3><p>{item.description}</p></div><span>{item.period}</span></div>)}
     </section>}
-    <ProfileDetails education={site.education} skills={site.skills} />
+    <ProfileDetails education={site.education} skills={site.skills} exploring={site.exploring} />
   </div>;
 }

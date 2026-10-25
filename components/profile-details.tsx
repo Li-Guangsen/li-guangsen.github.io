@@ -20,7 +20,7 @@ function SchoolSeal({ school }: { school: string }) {
   return <span className={styles.schoolFallback} aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m2 9 10-5 10 5-10 5L2 9ZM6 11v6c3.8 2.7 8.2 2.7 12 0v-6m4-2v7" /></svg></span>;
 }
 
-export function ProfileDetails({ education, skills, exploring = ['LangGraph', 'MCP', 'RAG'] }: ProfileDetailsProps) {
+export function ProfileDetails({ education, skills, exploring = [] }: ProfileDetailsProps) {
   if (!education.length && !skills.length) return null;
 
   return <div className={styles.profileDetails}>
