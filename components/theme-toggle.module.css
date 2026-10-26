@@ -12,15 +12,15 @@
   border-radius: 50%;
   color: var(--ink);
   background: var(--accent-soft);
-  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms var(--theme-ease);
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
-.toggle:hover {
-  background: color-mix(in srgb, var(--ink) 12%, var(--bg));
+@media (hover: hover) {
+  .toggle:hover { background: #e5e7eb; }
+  :global([data-theme='dark']) .toggle:hover { background: #404040; }
 }
 
-.toggle:active { transform: scale(.94); }
-.toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.toggle:focus-visible { outline: 2px solid var(--muted); outline-offset: 4px; }
 .icons { position: relative; display: block; width: 20px; height: 20px; }
 .sun, .moon { position: absolute; inset: 0; transform-origin: center; transition: transform 240ms var(--theme-ease), opacity 160ms ease; }
 .sun { opacity: 1; transform: rotate(0) scale(1); color: #e9950b; }
@@ -52,5 +52,4 @@
 
 @media (prefers-reduced-motion: reduce) {
   .toggle, .sun, .moon, .rays, .star { transition: none; }
-  .toggle:active { transform: none; }
 }

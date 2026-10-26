@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
+import { motion, useReducedMotion } from 'motion/react';
 import styles from './theme-toggle.module.css';
 
 const storageKey = 'sethli-theme';
@@ -16,6 +17,7 @@ function savedTheme() {
 }
 
 export function ThemeToggle() {
+  const reduced = useReducedMotion();
   const [dark, setDark] = useState(true);
   const revision = useRef(0);
   const targetTheme = useRef<'light' | 'dark' | null>(null);
@@ -99,7 +101,7 @@ export function ThemeToggle() {
   }
 
   const label = dark ? '切换浅色模式' : '切换深色模式';
-  return <button className={styles.toggle} type="button" onClick={(event) => { void toggle(event.currentTarget); }} aria-label={label} aria-pressed={dark} title={label}>
+  return <motion.button className={styles.toggle} type="button" whileHover={reduced ? undefined : { scale: 1.05 }} whileTap={reduced ? undefined : { scale: 0.95 }} onClick={(event) => { void toggle(event.currentTarget); }} aria-label={label} aria-pressed={dark} title={label}>
     <span className={styles.icons} aria-hidden="true">
       <svg className={styles.sun} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
         <circle cx="12" cy="12" r="4" />
@@ -110,5 +112,5 @@ export function ThemeToggle() {
         <path className={styles.star} d="M18 3.2v3.6M16.2 5h3.6" />
       </svg>
     </span>
-  </button>;
+  </motion.button>;
 }

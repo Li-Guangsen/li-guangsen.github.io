@@ -29,7 +29,7 @@ export function ContactMenu({ inline = false }: { inline?: boolean }) {
   return <div className={`contact-menu${inline ? ' contact-inline' : ''}`} ref={container} onBlur={(event) => {
     if (event.relatedTarget instanceof Node && !event.currentTarget.contains(event.relatedTarget)) setOpen(false);
   }}>
-    {!inline && <button ref={trigger} type="button" className="contact-trigger" aria-expanded={open} aria-controls={id} onClick={() => { setOpen(!open); setCopyStatus(''); }}>Contact</button>}
+    {!inline && <button ref={trigger} type="button" className="contact-trigger" aria-expanded={open} aria-controls={id} onClick={() => { setOpen(!open); setCopyStatus(''); }}><span className="contact-trigger-face">Contact</span></button>}
     {(inline || open) && <div id={id} className="contact-panel" role="region" aria-label={inline ? '移动端联系方式' : '联系方式'}>
       {inline && <p className="contact-label">Contact</p>}
       <a href={site.github} target="_blank" rel="noopener noreferrer"><GitHubIcon /><span>GitHub</span><span className="contact-value">↗</span></a>
