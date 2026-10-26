@@ -120,7 +120,7 @@ test('keeps a validated local snapshot and avatar when GitHub is unavailable', a
   const avatarFile = pathToFileURL(join(directory, 'avatar.png'));
   const cachedSnapshot = fixture();
   await writeFile(snapshotFile, JSON.stringify(cachedSnapshot));
-  await writeFile(avatarFile, await sharp({ create: { width: 128, height: 128, channels: 3, background: '#536f56' } }).png().toBuffer());
+  await writeFile(avatarFile, await sharp({ create: { width: 512, height: 512, channels: 3, background: '#536f56' } }).png().toBuffer());
   const warnBefore = console.warn;
   let warned = false;
   console.warn = () => { warned = true; };

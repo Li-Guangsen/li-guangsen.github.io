@@ -1,5 +1,5 @@
 import { site } from '@/data/site';
-import { githubProfile } from '@/lib/github';
+import { githubAvatar, githubProfile } from '@/lib/github';
 import { GitHubActivity } from '@/components/github-activity';
 import { ProfileDetails } from '@/components/profile-details';
 import { AvatarSpark } from '@/components/avatar-spark';
@@ -8,7 +8,7 @@ export default function Home() {
   return <div className="home-page">
     <section className="hero" aria-labelledby="intro-heading">
       <AvatarSpark className="profile-avatar" label="点击头像，撒点纸屑">
-        <img src={githubProfile.avatarPath} alt={`${site.displayName} 的 GitHub 头像`} width="112" height="112" fetchPriority="high" />
+        <img src={githubAvatar.src} alt={`${site.displayName} 的 GitHub 头像`} width="112" height="112" fetchPriority="high" />
       </AvatarSpark>
       <h1 id="intro-heading"><a href={site.github} target="_blank" rel="noopener noreferrer">@{githubProfile.login}</a></h1>
       <div className="profile-bio">{site.bio.map((line) => <p key={line}>{line}</p>)}</div>

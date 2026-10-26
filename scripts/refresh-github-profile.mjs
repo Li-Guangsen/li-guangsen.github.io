@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 const output = new URL('../data/github-profile.json', import.meta.url);
 const avatarOutput = new URL('../public/images/github-avatar.png', import.meta.url);
 const avatarPath = '/images/github-avatar.png';
+const avatarSize = 512;
 const username = process.env.GITHUB_PROFILE_USERNAME || process.env.GITHUB_ACTIVITY_USERNAME || 'Li-Guangsen';
 if (!/^[a-z\d](?:[a-z\d-]{0,37}[a-z\d])?$/i.test(username)) throw new Error('Invalid GitHub profile username.');
 const api = 'https://api.github.com';
@@ -92,7 +93,7 @@ async function request(path, fetchImpl) {
 
 async function downloadAvatar(source, fetchImpl) {
   const url = avatarSource(source);
-  url.searchParams.set('s', '128');
+  url.searchParams.set('s', String(avatarSize));
   const response = await fetchImpl(url, {
     headers: { Accept: 'image/png,image/jpeg,image/webp', 'User-Agent': 'Personal-Site-Profile-Snapshot' },
     redirect: 'error', signal: AbortSignal.timeout(15_000),
@@ -110,14 +111,14 @@ async function downloadAvatar(source, fetchImpl) {
   }
   const { default: sharp } = await import('sharp');
   return sharp(Buffer.concat(chunks), { limitInputPixels: 16_000_000 })
-    .rotate().resize(128, 128, { fit: 'cover' }).png().toBuffer();
+    .rotate().resize(avatarSize, avatarSize, { fit: 'cover' }).png().toBuffer();
 }
 
 async function validateCachedAvatar(file) {
   const { default: sharp } = await import('sharp');
   const image = sharp(await readFile(file), { limitInputPixels: 16_000_000 });
   const metadata = await image.metadata();
-  if (metadata.format !== 'png' || metadata.width !== 128 || metadata.height !== 128) throw new Error('Invalid cached GitHub avatar.');
+  if (metadata.format !== 'png' || metadata.width !== avatarSize || metadata.height !== avatarSize) throw new Error('Invalid cached GitHub avatar.');
   await image.raw().toBuffer();
 }
 
