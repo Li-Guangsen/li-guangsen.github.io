@@ -1,4 +1,6 @@
 .trigger {
+  --search-hover-border: color-mix(in srgb, var(--accent) 60%, var(--line));
+  --search-hover-glow: 0 0 0 3px color-mix(in srgb, var(--accent) 8%, transparent), 0 2px 14px color-mix(in srgb, var(--accent) 10%, transparent);
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
@@ -12,12 +14,13 @@
   border-radius: 9px;
   background: var(--chip-bg);
   color: var(--secondary);
-  transition: color 150ms ease, background-color 150ms ease;
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
 }
 
 .trigger > svg {
   width: 15px;
   height: 15px;
+  transition: color 180ms ease;
 }
 
 .label { font-size: 12px; }
@@ -44,20 +47,22 @@
 
 @media (hover: hover) {
   .trigger:hover {
-    background: #f5f5f5;
-    color: var(--ink);
+    border-color: var(--search-hover-border);
+    background: color-mix(in srgb, var(--accent) 3%, var(--chip-bg));
+    box-shadow: var(--search-hover-glow);
   }
 
-  :global([data-theme='dark']) .trigger:hover {
-    background: #404040;
-    color: #e5e5e5;
-  }
+  .trigger:hover > svg { color: var(--accent); }
 }
 
 .trigger:focus-visible {
-  outline: 2px solid var(--muted);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
+  border-color: var(--search-hover-border);
+  box-shadow: var(--search-hover-glow);
 }
+
+.trigger:focus-visible > svg { color: var(--accent); }
 
 @media (max-width: 720px) {
   .trigger {
@@ -73,5 +78,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .trigger { transition: none; }
+  .trigger, .trigger > svg { transition: none; }
 }
