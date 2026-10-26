@@ -359,9 +359,9 @@ test('domain-independent branding and GitHub repository provenance are present w
     assert.equal(await page.title(), 'sethli');
     assert.equal(await page.locator('header.site-header .brand svg').count(), 1);
     assert.equal(await page.locator('.profile-avatar img').getAttribute('src'), '/images/github-avatar.png');
-    const icons = await page.locator('link[rel="icon"]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')));
-    assert.ok(icons.includes('/icon.svg'));
-    assert.ok(icons.includes('/brand/favicon-16.png'));
+    const icons = await page.locator('link[rel="icon"]').evaluateAll((elements) => elements.map((element) => ({ href: element.getAttribute('href'), type: element.type, sizes: element.sizes.value })));
+    assert.ok(icons.some((icon) => icon.href.startsWith('/icon.svg') && icon.type === 'image/svg+xml' && icon.sizes === 'any'));
+    assert.ok(icons.some((icon) => icon.href === '/brand/favicon-16.png'));
     await page.getByRole('navigation', { name: '主导航' }).getByRole('link', { name: '项目', exact: true }).click();
     await page.waitForURL('**/projects/');
     const repositories = page.locator('#github-collection');

@@ -8,7 +8,7 @@ import styles from './footer.module.css';
 export function Footer() {
   return <footer className="site-footer"><div className="footer-inner">
     <div className="footer-top">
-      <div className="footer-about"><Link href="/" className="footer-name" aria-label={`${site.name} 首页`}><img src="/brand/favicon-32.png" alt="" width="20" height="20" /><BrandWordmark /></Link><p>Built with Next.js &amp; Velite<br />Deployed on GitHub Pages</p></div>
+      <div className="footer-about"><Link href="/" className="footer-name" aria-label={`${site.name} 首页`}><img src="/brand/avatar.svg" alt="" width="20" height="20" /><BrandWordmark /></Link><p>Built with Next.js &amp; Velite<br />Deployed on GitHub Pages</p></div>
       <div className={styles.resources}>
         <div><h2>Navigation</h2><nav className="footer-links" aria-label="页脚导航"><Link href="/">首页</Link><Link href="/projects/">项目</Link><Link href="/blog/">博客</Link><Link href="/the-world/">拾光</Link></nav></div>
         <div><h2>Interlinked</h2><nav className={styles.socials} aria-label="社交与联系">

@@ -18,9 +18,11 @@ export const metadata: Metadata = {
   robots: site.preview ? { index: false, follow: false } : { index: true, follow: true },
   icons: {
     icon: [
-      { url: '/icon.svg', type: 'image/svg+xml' },
-      { url: '/brand/favicon-32.png', type: 'image/png', sizes: '32x32' },
       { url: '/brand/favicon-16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/brand/favicon-32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/brand/favicon-64.png', type: 'image/png', sizes: '64x64' },
+      // Advertise the scalable source last; the version refreshes cached tab icons.
+      { url: '/icon.svg?v=2', type: 'image/svg+xml', sizes: 'any' },
     ],
     apple: [{ url: '/brand/apple-icon-180.png', sizes: '180x180', type: 'image/png' }],
   },

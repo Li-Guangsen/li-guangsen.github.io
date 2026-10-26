@@ -65,7 +65,7 @@ export function Header() {
 
   return <header ref={header} className={`site-header${menuOpen ? ' menu-open' : ''}${floating ? ' is-floating' : ''}`}>
     <div className="header-inner">
-      <Link className="brand" href="/" aria-label={`${site.name} 首页`}><img src="/brand/favicon-32.png" alt="" width="24" height="24" /><BrandWordmark /></Link>
+      <Link className="brand" href="/" aria-label={`${site.name} 首页`}><img src="/brand/avatar.svg" alt="" width="24" height="24" /><BrandWordmark /></Link>
       <nav id="site-nav" aria-label="主导航" onPointerLeave={() => setHighlight(null)} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setHighlight(null); }} onClick={(event) => { if ((event.target as HTMLElement).closest('a')) setMenuOpen(false); }}>
         {links.map(({ href, label }) => {
           const active = href === '/' ? pathname === '/' : pathname.startsWith(href.replace(/\/$/, ''));
