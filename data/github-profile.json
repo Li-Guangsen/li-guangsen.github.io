@@ -1,7 +1,7 @@
 {
   "version": 2,
   "source": "https://api.github.com/users/Li-Guangsen",
-  "updatedAt": "2026-10-26T07:44:57.718Z",
+  "updatedAt": "2026-10-27T12:21:31.521Z",
   "profile": {
     "login": "Li-Guangsen",
     "name": "李广森",
@@ -11,11 +11,37 @@
     "avatarUrl": "https://avatars.githubusercontent.com/u/91270779?v=4",
     "avatarPath": "/images/github-avatar.png",
     "createdAt": "2021-09-23T14:11:44Z",
-    "publicRepos": 5,
+    "publicRepos": 7,
     "followers": 0,
     "following": 0
   },
   "repositories": [
+    {
+      "name": "TimeComm",
+      "fullName": "Li-Guangsen/TimeComm",
+      "url": "https://github.com/Li-Guangsen/TimeComm",
+      "description": null,
+      "fork": false,
+      "language": "Java",
+      "stars": 0,
+      "forks": 0,
+      "pushedAt": "2026-10-27T11:52:53Z",
+      "archived": false,
+      "parent": null
+    },
+    {
+      "name": "RepoPilot",
+      "fullName": "Li-Guangsen/RepoPilot",
+      "url": "https://github.com/Li-Guangsen/RepoPilot",
+      "description": "AI-powered GitHub development agent built on DeerFlow",
+      "fork": false,
+      "language": null,
+      "stars": 0,
+      "forks": 0,
+      "pushedAt": "2026-10-26T13:56:22Z",
+      "archived": false,
+      "parent": null
+    },
     {
       "name": "li-guangsen.github.io",
       "fullName": "Li-Guangsen/li-guangsen.github.io",
@@ -25,7 +51,7 @@
       "language": "TypeScript",
       "stars": 0,
       "forks": 0,
-      "pushedAt": "2026-10-26T07:21:16Z",
+      "pushedAt": "2026-10-26T08:12:03Z",
       "archived": false,
       "parent": null
     },

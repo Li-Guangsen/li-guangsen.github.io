@@ -46,11 +46,44 @@ export type Project = {
   year: string;
   url?: string;
   github?: string;
+  icon?: string;
   image?: string;
   notes?: { title: string; paragraphs?: string[]; items?: string[] }[];
 };
 
 export const projects: Project[] = [
+  {
+    slug: 'repopilot',
+    title: 'RepoPilot',
+    eyebrow: 'GITHUB AGENT',
+    description: '基于 DeerFlow 的 GitHub 研发 Agent，探索 Issue 分析、代码修改与 Draft PR 交付。开发中。',
+    tags: ['Python', 'LangGraph', 'MCP', 'Docker'],
+    status: '开发中',
+    year: '2026',
+    github: 'https://github.com/Li-Guangsen/RepoPilot',
+    icon: '/images/projects/repopilot.svg',
+    notes: [
+      { title: '当前进度', paragraphs: ['已完成 DeerFlow 上游源码梳理、环境检查和阶段规划，下一步是验证 Agent 工具调用与 Docker 沙箱运行。'] },
+      { title: '开发计划', items: ['面向文档修复、单元测试补充和小 Bug 修复，分析 GitHub Issue 并制定计划。', '开发 Python 测试报告与 Diff 检查工具，记录实际测试结果和变更。', '打通 Issue → 沙箱修改与验证 → Draft PR 的流程，保留人工审核。'] },
+      { title: '技术路线', paragraphs: ['基于 DeerFlow 二次开发，使用 Python、LangGraph、MCP 和 Docker Sandbox。测试报告工具与完整交付流程仍在规划中，开发进度记录在 GitHub 仓库。'] },
+    ],
+  },
+  {
+    slug: 'timecomm',
+    title: 'TimeComm',
+    eyebrow: '拾光社区 · JAVA BACKEND',
+    description: '从零搭建的 Java 内容社区，围绕笔记、互动与搜索练习后端开发。目前处于基础工程阶段。',
+    tags: ['Java', 'Spring Boot', 'MySQL', 'Redis'],
+    status: '开发中',
+    year: '2026',
+    github: 'https://github.com/Li-Guangsen/TimeComm',
+    icon: '/images/projects/timecomm.svg',
+    notes: [
+      { title: '当前进度', paragraphs: ['已创建 Java 17 / Maven 基础工程和开发计划，下一步是验证工程构建、搭建第一个 Spring Boot 业务模块。'] },
+      { title: '开发计划', items: ['用户认证、个人资料与笔记发布。', '点赞、收藏、评论、关注及相关计数。', '随业务推进加入缓存、异步消息与内容检索，并补充测试和性能测量。'] },
+      { title: '技术路线', paragraphs: ['计划采用 Spring Boot 3、MySQL 和 Redis，后续逐步引入 Spring Cloud Alibaba、RocketMQ 与 Elasticsearch。目前仍在工程搭建阶段，模块进度记录在 GitHub 仓库。'] },
+    ],
+  },
   {
     slug: 'personal-site',
     title: '个人网站',

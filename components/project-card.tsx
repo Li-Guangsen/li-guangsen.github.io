@@ -5,13 +5,13 @@ import { GitHubIcon } from './social-icons';
 import { PointerCard } from './pointer-card';
 
 export function ProjectVisual({ project }: { project?: Project }) {
-  return <div className={`project-visual${project?.image ? ' has-cover' : ''}`} aria-hidden="true"><img src={project?.image || site.avatar} alt="" width="128" height="128" loading="lazy" /></div>;
+  return <div className={`project-visual${project?.image ? ' has-cover' : ''}`} aria-hidden="true"><img src={project?.image || project?.icon || site.avatar} alt="" width="128" height="128" loading="lazy" /></div>;
 }
 
 export function ProjectCard({ project }: { project: Project }) {
   return <PointerCard className="project-card">
     <div className="project-card-header">
-      <Link href={`/projects/${project.slug}/`} aria-label={`查看项目：${project.title}`}><img className="project-icon" src={project.image || site.avatar} alt="" width="56" height="56" /></Link>
+      <Link href={`/projects/${project.slug}/`} aria-label={`查看项目：${project.title}`}><img className="project-icon" src={project.icon || project.image || site.avatar} alt="" width="56" height="56" /></Link>
       <div><h3><Link href={`/projects/${project.slug}/`}>{project.title}</Link></h3><p>{project.eyebrow}</p></div>
     </div>
     <div className="project-description"><p>{project.description}</p><div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div></div>

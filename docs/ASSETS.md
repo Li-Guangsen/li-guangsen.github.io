@@ -16,3 +16,9 @@
 ## 教育与技术图标
 
 学校校徽使用站点所有者提供的完整 SVG，说明见 `public/images/education/README.md`。FastAPI 使用项目官方现行图标，其余技术图标也使用本地 SVG，来源及许可证见 `public/icons/tech/README.md`。
+
+## 项目与相册
+
+`public/images/projects/repopilot.svg` 与 `timecomm.svg` 是本站绘制的项目图标，沿用站点品牌配色。
+
+`public/images/world/clawd-wizard.webp` 来自站点所有者提供的 Wizard 版 Clawd 玩偶照片，转换为 WebP 供网页展示。
