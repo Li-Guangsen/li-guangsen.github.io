@@ -6,7 +6,7 @@ import { worldCollections, type WorldCard, type WorldCollection } from '@/data/w
 import styles from './showcase.module.css';
 
 const allCards = worldCollections.flatMap((collection) => collection.cards);
-const cardLabels = { illustration: '展示插画', photo: '生活记录', film: '电影剧照' };
+const cardLabels = { illustration: '展示插画', photo: '生活记录', film: '电影剧照', game: '游戏海报' };
 
 function ScrapbookCard({ card, constraints, reset, open, compact }: { card: WorldCard; constraints: React.RefObject<HTMLDivElement | null>; reset: number; open: (id: string) => void; compact: boolean }) {
   const x = useMotionValue(0);
@@ -52,7 +52,7 @@ function ScrapbookCard({ card, constraints, reset, open, compact }: { card: Worl
       <img src={card.image} width="800" height="560" alt={card.alt} style={{ objectPosition: card.imagePosition }} loading="lazy" draggable="false" />
       <span className={styles.expandHint} aria-hidden="true">↗</span>
     </button>
-    <div className={styles.cardCaption}><h3>{card.title}</h3><p>{card.caption}</p></div>
+    <div className={styles.cardCaption}><h3>{card.title}</h3><p className={card.showCaption ? styles.visibleCaption : undefined}>{card.caption}</p></div>
     <span className={styles.cardGlare} aria-hidden="true" />
   </motion.article>;
 }

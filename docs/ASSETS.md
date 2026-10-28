@@ -22,3 +22,5 @@
 `public/images/projects/repopilot.svg` 与 `timecomm.svg` 是本站绘制的项目图标，沿用站点品牌配色。
 
 `public/images/world/clawd-wizard.webp` 来自站点所有者提供的 Wizard 版 Clawd 玩偶照片，转换为 WebP 供网页展示。
+
+`public/images/world/phantom-blade-zero.webp` 来自站点所有者提供的《影之刃零》游戏海报，转换为 WebP 供收藏展示。

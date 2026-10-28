@@ -230,7 +230,7 @@ test('normal motion keeps the sticky header and hovered text stationary', { time
     await page.mouse.move(bounds.x + bounds.width / 2 + 32, bounds.y + bounds.height / 2 + 20, { steps: 8 });
     await page.mouse.up();
     assert.ok(Math.abs(await card.evaluate(el => new DOMMatrix(getComputedStyle(el).transform).m41) - initial) > 8, 'Dragging the photo handle must move its card');
-    await page.getByRole('button', { name: '重新摆好Digital World的卡片', exact: true }).click();
+    await card.locator('xpath=ancestor::section').getByRole('button', { name: /^重新摆好/ }).click();
     await page.waitForFunction(() => new DOMMatrix(getComputedStyle(document.querySelector('[data-the-world-page] article')).transform).m41 === 0);
   });
 });

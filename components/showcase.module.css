@@ -26,6 +26,7 @@
 .cardCaption { padding-top: 16px; text-align: center; }
 .cardCaption h3 { font-size: 20px; line-height: 28px; font-weight: 650; }
 .cardCaption p { display: none; }
+.cardCaption p.visibleCaption { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.6; }
 .lightbox { position: fixed; width: min(900px, calc(100vw - 32px)); max-width: calc(100vw - 32px); max-height: calc(100dvh - 32px); padding: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); color: var(--ink); overflow: auto; box-shadow: 0 24px 100px #0004; }
 .lightbox::backdrop { background: #000b; }
 .lightboxContent { padding: 20px; }
